@@ -1,19 +1,20 @@
 import Header from "../UserDashboard/Header"
-import { useContext, useEffect } from 'react';
-import { AccountContext } from "../../Context/AccountProvider";
+// import { useContext } from 'react';
+// import { AccountContext } from "../../Context/AccountProvider";
+import { useNavigate } from "react-router-dom";
 const UserDashboard = () => {
-    const {setAccount}  = useContext(AccountContext);
-    useEffect(()=>{
-        const sessionValue = JSON.parse(sessionStorage.getItem('user'));
-        if(!sessionValue){
-            setAccount(null)
-        }
-        // uUDH4lJ8543XOhGF
-    })
-return <>
-<Header/>
-<h1>This is the User Dashboard</h1>
-</>
+    const navigate = useNavigate()
+    // const { account } = useContext(AccountContext);
+    const sessionValue = sessionStorage.getItem('user')
+    if(!sessionValue){
+        navigate('/login');
+    } else {
+        return <>
+        <Header />
+        <h1>This is the User Dashboard</h1>
+    </>
+    }
+    
 }
 
 

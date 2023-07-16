@@ -9,37 +9,41 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { Avatar } from '@mui/material';
+import { useNavigate } from "react-router-dom";
 
 import { useContext, useState } from 'react';
 import { AccountContext } from '../../Context/AccountProvider';
 function Header() {
-    const {account, setAccount}  = useContext(AccountContext);
+    const navigate = useNavigate()
+    const {setAccount}  = useContext(AccountContext);
     const [confirmLogout, setConfirmLogout] = useState(false);
-   
-    
     const logoutHandler = () => {
         sessionStorage.removeItem('user');
-        setAccount(null)
+        setAccount(null);
+        setConfirmLogout(false);
+        navigate('/login')
+
     }
+    const sessionValue = JSON.parse(sessionStorage.getItem('user'))
   return (
     <React.Fragment>
       <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
-      <Avatar alt="Remy Sharp" src={account.picture} /> &nbsp;&nbsp;
+      <Avatar alt="Remy Sharp" src={sessionValue.picture} /> &nbsp;&nbsp;
       <Typography
           component="h2"
           variant="h5"
         >
-          {account.name}
+          {sessionValue.name}
         </Typography>
         <Typography
           component="h2"
-          variant="h3"
+          variant="h2"
           color="inherit"
           align="center"
           noWrap
           sx={{ flex: 1 }}
         >
-          Dream Big
+          DREAM BIG
         </Typography>
     
         <Button variant="contained" size="small" onClick={()=>setConfirmLogout(true)}>

@@ -1,49 +1,19 @@
 // React Imports
 import * as React from 'react';
-import { useContext } from "react";
 
 // Components Import
-import Avatar from '@mui/material/Avatar';
 import CssBaseline from '@mui/material/CssBaseline';
-import logo from '../../resouces/logo.png'
 import Wallpaper from '../../resouces/wallpaper.png';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import Box from '@mui/material/Box';
 import Grid from '@mui/material/Grid';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { Divider } from '@mui/material';
-import styled from '@emotion/styled';
 
 // Other Imports
-import { GoogleLogin } from '@react-oauth/google';
-import jwt_decode from 'jwt-decode';
-import { AccountContext } from '../../Context/AccountProvider';
-import { addUser } from '../../Services/userApi';
-
+import UserLogin from './loginType/UserLogin';
 const defaultTheme = createTheme();
-const TagLine = styled(Typography)`font-size:15px;`;
-const Branding = styled(Typography)`margin-bottom: 0.10em;`;
+
 
 
 export default function Login() {
-  const { setAccount } = useContext(AccountContext);
-  const onLoginSuccess = async (res) => {
-    const decoded = jwt_decode(res.credential);
-    console.log(decoded)
-    setAccount(decoded);
-    addUser({name:'harish'})
-
-    sessionStorage.setItem('user', JSON.stringify(decoded));
-
-  }
-
-  const onLoginError = (res) => {
-    console.log('Login Failed')
-  }
-
   return (
     <ThemeProvider theme={defaultTheme}>
       <Grid container component="main" sx={{ height: '100vh' }}>
@@ -62,69 +32,9 @@ export default function Login() {
             backgroundPosition: 'center',
           }}
         />
-        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
-          <Box
-            sx={{
-              my: 8,
-              mx: 4,
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'center',
-            }}
-          >
-            <img src={logo} alt="logo" style={{ height: '200px', width: '200px' }} />
-            <Branding variant="h1" gutterBottom>
-              Dream Big
-            </Branding>
-            <TagLine variant="h6" gutterBottom>
-              A Digital Marketing App b/w Brands & Influencers.
-            </TagLine>
-            <Divider />
-            <Avatar sx={{ m: 1, bgcolor: 'secondary.main' }}>
-              <LockOutlinedIcon />
-            </Avatar>
-            <Typography component="h1" variant="h5">
-              Sign in
-            </Typography>
-            <Box component="form" noValidate onSubmit={() => { }} sx={{ mt: 1 }}>
-              
-              <GoogleLogin
-                 theme='filled_blue'
-                 onSuccess={onLoginSuccess}
-                 onError={onLoginError}
-               />
-             
-              <br/>
-              <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Brand Signup
-                  </Link>
-                </Grid>
-                <Grid item>
-                  <Link href="#" variant="body2">
-                    {"Influencer Signup"}
-                  </Link>
-                </Grid>
-              </Grid>
-              <Copyright sx={{ mt: 5 }} />
-            </Box>
-          </Box>
-        </Grid>
+      <UserLogin/>
       </Grid>
     </ThemeProvider>
   );
 }
 
-function Copyright(props) {
-  return (
-    <Typography variant="body2" color="text.secondary" align="center" {...props}>
-      {'Copyright © '}
-      <Link color="inherit" href="https://mui.com/">
-        Dream Big
-      </Link>{' '}
-      {new Date().getFullYear()}
-      {'.'}
-    </Typography>
-  );
-}
