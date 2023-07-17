@@ -36,7 +36,7 @@ const UserLogin = () => {
         }
     
         const result = await addUser(userdata);
-        if(result.status === 200){
+        if(result?.status === 200){
             setAccount(userdata);
             sessionStorage.setItem('user', JSON.stringify(userdata));
             setIsLoginError(false)

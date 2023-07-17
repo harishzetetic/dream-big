@@ -6,18 +6,24 @@ import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { DatePicker } from '@mui/x-date-pickers/DatePicker';
 import dayjs from 'dayjs';
+import {Snackbar} from '@mui/material';
+import {Alert} from '@mui/material';
+import {useState} from 'react';
 
 import { MenuItem } from '@mui/material';
 import { targetAudience, fuelType } from '../../constants';
+import { createCampaign } from '../../Services/brandsApi';
 
 
 
 const defaultTheme = createTheme();
 
 const NewCampaign = () => {
-    const handleSubmit = (event) => {
+    const userData = JSON.parse(sessionStorage.getItem('user'))
+    const INITIAL_RESPONSE = { show: false, message: '', type: 'success'}
+    const [apiResponse, setApiResponse] = useState(INITIAL_RESPONSE)
+    const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const dataSetForApi = {
@@ -34,17 +40,40 @@ const NewCampaign = () => {
             objective:data.get('objective'),
             subscribers:[],
             likes:[],
+            dislikes:[],
             comments:[],
             sales: 0,
-            subscribersRating:0
+            subscribersRating:0,
+            createdBy:userData._id,
+            createdDate:dayjs().format('YYYY-MM-DD'),
+            status:true
         }
-        
+        const result = await createCampaign(dataSetForApi);
+        if(result?.status === 200){
+            if(result.data._id){
+                setApiResponse({
+                    show: true,
+                    message: 'Great! You have created the campaign. Best of Luck.',
+                    type: 'success'
+                })
+            }
+        } else {
+            setApiResponse({
+                show: true,
+                message: 'Oops! Error while creating campaign',
+                type: 'error'
+            })
+        }
       };
 
 
     return<>
     <ThemeProvider theme={defaultTheme}>
-   
+    <Snackbar open={apiResponse.show} autoHideDuration={6000} onClose={()=>{setApiResponse(INITIAL_RESPONSE)}}>
+        <Alert onClose={()=>setApiResponse(INITIAL_RESPONSE)} severity={apiResponse.type} sx={{ width: '100%' }}>
+           {apiResponse.message}
+        </Alert>
+    </Snackbar>
       <Container component="main">
         <Paper variant="outlined" sx={{ my: { xs: 3, md: 6 }, p: { xs: 2, md: 3 } }}>
          
@@ -91,7 +120,6 @@ const NewCampaign = () => {
               </Grid>
               <Grid item xs={3}>
               <TextField
-                  required
                   fullWidth
                   select
                   id="targetAudience"
@@ -108,7 +136,6 @@ const NewCampaign = () => {
                 </Grid>
                 <Grid item xs={3}>
                 <TextField
-                  required
                   fullWidth
                   name="rewards"
                   label="Rewards/Unit"
@@ -120,7 +147,6 @@ const NewCampaign = () => {
               </Grid>
               <Grid item xs={3}>
                 <TextField
-                  required
                   fullWidth
                   name="modelName"
                   label="Model Name"
@@ -130,7 +156,6 @@ const NewCampaign = () => {
               </Grid>
               <Grid item xs={3}>
                 <TextField
-                  required
                   fullWidth
                   name="modelId"
                   label="Model Id"
@@ -140,7 +165,6 @@ const NewCampaign = () => {
               </Grid>
               <Grid item xs={3}>
                 <TextField
-                  required
                   fullWidth
                   name="pricing"
                   label="Pricing(Ex. Showroom)"
@@ -150,7 +174,6 @@ const NewCampaign = () => {
               </Grid>
               <Grid item xs={3}>
               <TextField
-                  required
                   fullWidth
                   select
                   id="fuelType"
@@ -167,7 +190,6 @@ const NewCampaign = () => {
                 </Grid>
                 <Grid item xs={12}>
                 <TextField
-                  required
                   fullWidth
                   name="url"
                   label="Official URL"
@@ -177,7 +199,6 @@ const NewCampaign = () => {
               </Grid>
               <Grid item xs={12}>
                 <TextField
-                  required
                   fullWidth
                   name="objective"
                   label="Objective"

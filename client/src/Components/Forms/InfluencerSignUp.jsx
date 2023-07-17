@@ -53,7 +53,7 @@ const InfluencerSignUp = () => {
             return;
         }
         const result = await signUpInfluencer(dataSetForApi)
-        if(result.status === 200){
+        if(result?.status === 200){
             if(result.data.msg){
                 setApiResponse({
                     show: true,
@@ -74,6 +74,12 @@ const InfluencerSignUp = () => {
                 })  
             }
 
+        } else {
+            setApiResponse({
+                show: true,
+                message: 'Oops! Error occured',
+                type: 'error'
+            })  
         }
     };
 

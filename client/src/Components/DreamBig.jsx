@@ -6,10 +6,11 @@ import InfluencerLogin from "./Login/loginType/InfluencerLogin";
 import InfluencerDashboard from "./Pages/InfluencerDashboard";
 import BrandLogin from "./Login/loginType/BrandLogin";
 import BrandDashboard from "./Pages/BrandDashboard";
+import './style.css'
 const DreamBig = () => {
     return <>
         <Routes>
-            <Route exact path="/" element={<UserDashboard/>} />
+            <Route exact path="/" element={<Login/>} />
             <Route path="/login" element={<Login/>} />
             <Route path="/influencer-login" element={<InfluencerLogin/>} />
             <Route path="/brand-login" element={<BrandLogin />} />

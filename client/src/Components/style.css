@@ -1,0 +1,14 @@
+.active{
+    border-left: 6px solid #1976d2;
+    background: #9a9a9a22;
+}
+.db{
+    font-style: italic;
+    background-color: #1976d2;
+    color: white;
+    font-weight: 1000;
+    font-size:14px;
+    padding: 4px 4px;
+    border-radius:50%;
+    border:2px solid black;
+}

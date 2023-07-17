@@ -37,6 +37,9 @@ import { Button } from '@mui/material';
 import {useState, useEffect} from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import NewCampaign from '../Forms/NewCampaign';
+import CampaignCard from '../Common/CampaignCard';
+import ActiveCampaign from '../BrandDashboard/ActiveCampaign';
+import FailedCampaign from '../BrandDashboard/FailedCampaign';
 
 
 const defaultTheme = createTheme();
@@ -135,13 +138,13 @@ const BrandDashboard = () => {
       <ListItemIcon>
         <ShoppingCartIcon />
       </ListItemIcon>
-      <ListItemText primary="Active Campaigns" />
+      <ListItemText primary="Active Campaigns" onClick={()=>setCurrentTab('active-campaign')}/>
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>
         <PeopleIcon />
       </ListItemIcon>
-      <ListItemText primary="Failed Campaigns" />
+      <ListItemText primary="Failed Campaigns" onClick={()=>setCurrentTab('failed-campaign')}/>
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>
@@ -245,6 +248,13 @@ const BrandDashboard = () => {
             }
               {currentTab === 'newcampaign' && 
               <NewCampaign />
+              }
+              {currentTab === 'active-campaign' &&
+              <ActiveCampaign brandId={sessionValue._id}/>
+              
+              }
+               {currentTab === 'failed-campaign' &&
+                <FailedCampaign brandId={sessionValue._id}/>
               }
 
 

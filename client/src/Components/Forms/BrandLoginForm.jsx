@@ -18,7 +18,7 @@ const BrandLoginForm = () => {
             password: data.get('loginpassword'),
         })
 
-        if(result.status === 200){
+        if(result?.status === 200){
             if(result.data.msg){
                 setApiResponse({
                     show: true,
@@ -36,6 +36,12 @@ const BrandLoginForm = () => {
                     type: 'error'
                 })  
             }
+        } else {
+            setApiResponse({
+                show: true,
+                message: 'Oops! Error occured',
+                type: 'error'
+            })
         }
     };
 

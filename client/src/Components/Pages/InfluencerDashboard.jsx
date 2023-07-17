@@ -33,6 +33,8 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import LogoutConfirm from '../Common/LogoutConfirm';
+import { Button } from '@mui/material';
+import {AddIcon} from '@mui/icons-material';
 
 import {useState, useEffect} from 'react';
 
@@ -119,6 +121,10 @@ const InfluencerDashboard = () => {
           </Toolbar>
           <Divider />
           <List component="nav">
+          <ListItemButton>
+            
+            <Button variant="contained" fullWidth onClick={()=>{}}><AddIcon /> &nbsp;New Post</Button>
+      </ListItemButton>
           <ListItemButton>
       <ListItemIcon>
         <DashboardIcon />

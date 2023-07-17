@@ -43,7 +43,7 @@ const BrandSignUp = () => {
             return;
         }
         const result = await signUpBrand(dataSetForApi)
-        if(result.status === 200){
+        if(result?.status === 200){
             if(result.data.msg){
                 setApiResponse({
                     show: true,
@@ -64,6 +64,12 @@ const BrandSignUp = () => {
                 })  
             }
 
+        } else {
+            setApiResponse({
+                show: true,
+                message: 'Oops! Error occured',
+                type: 'error'
+            })  
         }
     };
 
