@@ -6,13 +6,13 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import { Container } from '@mui/material';
-import InfluencerSignUp from '../../Forms/InfluencerSignUp';
-import InfluencerLoginForm from '../../Forms/InfluencerLoginForm';
+import BrandSignUp from '../../Forms/BrandSignUp';
 import Copyright from '../../Common/Copyright';
+import BrandLoginForm from '../../Forms/BrandLoginForm';
 
 const defaultTheme = createTheme();
 
-export default function InfluencerLogin() {
+export default function BrandLogin() {
     return (
         <ThemeProvider theme={defaultTheme}>
             <Grid container component="main" sx={{ height: '90vh', backgroundImage: `url(${background})`, backgroundPosition:'center' }}>
@@ -31,7 +31,7 @@ export default function InfluencerLogin() {
                         <Typography component="h1" variant="h5">
                             Sign up
                         </Typography>
-                        <InfluencerSignUp />
+                        <BrandSignUp />
                     </Box>
                 </Container>
                 <Grid item xs={12} sm={8} md={5}>
@@ -50,7 +50,8 @@ export default function InfluencerLogin() {
                         <Typography component="h1" variant="h5">
                             Sign in
                         </Typography>
-                        <InfluencerLoginForm />
+                        {/**/}
+                        <BrandLoginForm/>
                     </Box>
                 </Grid>
             </Grid>

@@ -20,9 +20,9 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useNavigate } from "react-router-dom";
-import Chart from '../InfluencerDashboard/Chart';
-import Deposits from '../InfluencerDashboard/Deposit';
-import Orders from '../InfluencerDashboard/Orders';
+import Chart from '../BrandDashboard/Chart';
+import Deposits from '../BrandDashboard/Deposit';
+import Orders from '../BrandDashboard/Orders';
 import ListItemButton from '@mui/material/ListItemButton';
 import ListItemIcon from '@mui/material/ListItemIcon';
 import ListItemText from '@mui/material/ListItemText';
@@ -33,14 +33,17 @@ import PeopleIcon from '@mui/icons-material/People';
 import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import LogoutConfirm from '../Common/LogoutConfirm';
-
+import { Button } from '@mui/material';
 import {useState, useEffect} from 'react';
+import AddIcon from '@mui/icons-material/Add';
+import NewCampaign from '../Forms/NewCampaign';
+
 
 const defaultTheme = createTheme();
 const drawerWidth = 240;
-
-const InfluencerDashboard = () => {
+const BrandDashboard = () => {
     const [confirmLogout, setConfirmLogout] = useState(false);
+    const [currentTab, setCurrentTab] = useState('dashboard');
 
     const [open, setOpen] = React.useState(true);
     const toggleDrawer = () => {
@@ -59,11 +62,10 @@ const InfluencerDashboard = () => {
       navigate('/brand-dashboard');
   }
     }, []);
-    
-    //***************************************************************************************************** */
-     
-        // const sessionValue = JSON.parse(sessionStorage.getItem('user'))
 
+
+    
+   
         return <>
        <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -93,7 +95,7 @@ const InfluencerDashboard = () => {
               noWrap
               sx={{ flexGrow: 1 }}
             >
-              Influencer Dashboard
+              Brand Dashboard
             </Typography>
             <IconButton color="inherit">
               <Badge badgeContent={4} color="secondary">
@@ -120,10 +122,14 @@ const InfluencerDashboard = () => {
           <Divider />
           <List component="nav">
           <ListItemButton>
+            
+          <Button variant="contained" fullWidth onClick={()=>setCurrentTab('newcampaign')}><AddIcon /> &nbsp;New Campaign</Button>
+    </ListItemButton>
+          <ListItemButton>
       <ListItemIcon>
         <DashboardIcon />
       </ListItemIcon>
-      <ListItemText primary="Dashboard" />
+      <ListItemText primary="Dashboard" onClick={()=>setCurrentTab('dashboard')}/>
     </ListItemButton>
     <ListItemButton>
       <ListItemIcon>
@@ -161,6 +167,13 @@ const InfluencerDashboard = () => {
             
           </List>
         </Drawer>
+
+
+
+
+
+
+
         <Box
           component="main"
           sx={{
@@ -175,9 +188,28 @@ const InfluencerDashboard = () => {
         >
           <Toolbar />
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
+
+
+
+
+
+
+
             <Grid container spacing={3}>
-              {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
+              
+
+
+
+
+
+
+
+
+
+            {currentTab === 'dashboard' && 
+            <>
+             {/* Chart */}
+             <Grid item xs={12} md={8} lg={9}>
                 <Paper
                   sx={{
                     p: 2,
@@ -208,10 +240,34 @@ const InfluencerDashboard = () => {
                   <Orders />
                 </Paper>
               </Grid>
-            </Grid>
+           
+            </>
+            }
+              {currentTab === 'newcampaign' && 
+              <NewCampaign />
+              }
+
+
+
+
+
+             </Grid>
             <Copyright sx={{ pt: 4 }} />
+
+
+
+
+
+
           </Container>
+
         </Box>
+
+
+
+
+
+
       </Box>
       <LogoutConfirm confirmLogout={confirmLogout} setConfirmLogout={setConfirmLogout}/>
     </ThemeProvider>
@@ -219,8 +275,7 @@ const InfluencerDashboard = () => {
     
     
 }
-
-  const AppBar = styled(MuiAppBar, {
+const AppBar = styled(MuiAppBar, {
     shouldForwardProp: (prop) => prop !== 'open',
   })(({ theme, open }) => ({
     zIndex: theme.zIndex.drawer + 1,
@@ -264,7 +319,5 @@ const InfluencerDashboard = () => {
     }),
   );
 
-export default InfluencerDashboard
 
-
-
+export default BrandDashboard

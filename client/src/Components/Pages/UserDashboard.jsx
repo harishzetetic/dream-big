@@ -1,19 +1,30 @@
 import Header from "../UserDashboard/Header"
-// import { useContext } from 'react';
-// import { AccountContext } from "../../Context/AccountProvider";
 import { useNavigate } from "react-router-dom";
+import {useState, useEffect} from 'react';
+
+
 const UserDashboard = () => {
     const navigate = useNavigate()
-    // const { account } = useContext(AccountContext);
-    const sessionValue = sessionStorage.getItem('user')
-    if(!sessionValue){
+    const sessionValue = JSON.parse(sessionStorage.getItem('user'))
+    useEffect(() => {
+      if(sessionValue === null){
         navigate('/login');
-    } else {
+    }else if(sessionValue.role === "dreambig.influencer") {
+        navigate('/influencer-dashboard');
+    } else if(sessionValue.role === "dreambig.user"){
+        navigate('/user-dashboard');
+    }else if(sessionValue.role === "dreambig.brand"){
+      navigate('/brand-dashboard');
+  }
+    }, []);
+
+
+     
         return <>
         <Header />
         <h1>This is the User Dashboard</h1>
     </>
-    }
+    
     
 }
 

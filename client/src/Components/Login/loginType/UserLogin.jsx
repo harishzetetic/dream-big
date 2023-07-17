@@ -4,6 +4,7 @@ import jwt_decode from 'jwt-decode';
 import { useNavigate } from 'react-router-dom';
 import { AccountContext } from '../../../Context/AccountProvider';
 import { Link } from 'react-router-dom';
+import Copyright from '../../Common/Copyright';
 
 import { GoogleLogin } from '@react-oauth/google';
 import Avatar from '@mui/material/Avatar';
@@ -77,7 +78,7 @@ const UserLogin = () => {
         <br />
         <Grid container>
           <Grid item xs>
-            <Link to="/" >
+            <Link to="/brand-login" >
               Brand Login
             </Link>
           </Grid>
@@ -92,18 +93,5 @@ const UserLogin = () => {
     </Box>
   </Grid>
 }
-
-function Copyright(props) {
-    return (
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
-        {'Copyright © '}
-        <Link color="inherit" href="https://rsystems.com/">
-          Dream Big
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
-    );
-  }
 
 export default UserLogin;
