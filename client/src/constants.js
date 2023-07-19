@@ -108,3 +108,5 @@ export const brands = [
   export const targetAudience = ["Businessmen", "Service Professional", "Commercial", "Other"]
 
   export const fuelType = ["Petrol", "Diesel", "CNG", "Flex Fuel", "Electric", "Hydrogen"]
+
+  export const postType=["Blog", "Video"]

@@ -1,22 +1,13 @@
-import * as React from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardActions from '@mui/material/CardActions';
-import CardContent from '@mui/material/CardContent';
-import Button from '@mui/material/Button';
-import Typography from '@mui/material/Typography';
+
+import { Fab, Grid, Rating, Link, styled, Typography, Button, CardContent, CardActions, Card, Box } from '@mui/material'
 import CircleIcon from '@mui/icons-material/Circle';
-import { Divider, Link, styled } from '@mui/material'
 import GroupAddIcon from '@mui/icons-material/GroupAdd';
-import { Grid } from '@mui/material';
-import { Rating } from '@mui/material';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
-import DirectionsCarIcon from '@mui/icons-material/DirectionsCar';
 import VerifiedIcon from '@mui/icons-material/Verified';
-import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
-import {Fab} from '@mui/material';
 import FavoriteIcon from '@mui/icons-material/Favorite';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
+import {useState} from 'react'
+import { likeDislike, joinCampaign, leaveCampaign } from '../../Services/influencersApi';
 
 const StatusIcon = styled(CircleIcon)`
 color: #28ed6a;
@@ -33,6 +24,10 @@ float:right
 `
 
 const JoinCampaignBtn = styled(Button)`
+float:right;
+margin-right:10px;
+`
+const LeaveCampaignBtn = styled(Button)`
 float:right;
 margin-right:10px;
 `
@@ -69,8 +64,8 @@ const LikeDisLikeGrid= styled(Grid)`
     align-items:center;
 `
 
-export default function CampaignCard({campaign}) {
-
+export default function CampaignCard(props) {
+    const [campaign, setCampaign] = useState(props.campaign)
     const sessionValue = JSON.parse(sessionStorage.getItem('user'))
     const isBrand = sessionValue.role === 'dreambig.brand'
     const getRating = () => {
@@ -92,7 +87,43 @@ export default function CampaignCard({campaign}) {
               return 5;
         }
     }
-        
+    
+    const likeDislikeCampaign = async (vote, campaignId) => {
+        const userId = sessionValue._id;
+        const userName = `${sessionValue.firstName} ${sessionValue.lastName}`
+        const result = await likeDislike({vote, campaignId, userId, userName}) 
+        if(result?.status === 200){
+            setCampaign(result.data)
+        }
+    }
+
+    const joinThisCampaign = async()=>{
+        const data ={
+            joinerId: sessionValue._id,
+            joinerName: `${sessionValue.firstName} ${sessionValue.lastName}`,
+            campaignId: campaign._id,
+            campaignTitle: campaign.title
+        }
+        const result = await joinCampaign(data);
+        if(result?.status === 200){
+            window.confirm('You have successfully joined the campaign')
+            setCampaign(result.data)
+        }
+    }
+
+    const leaveThisCampaign = async()=>{
+        const data ={
+            joinerId: sessionValue._id,
+            joinerName: `${sessionValue.firstName} ${sessionValue.lastName}`,
+            campaignId: campaign._id,
+            campaignTitle: campaign.title
+        }
+        const result = await leaveCampaign(data);
+        if(result?.status === 200){
+            window.confirm('You have successfully leave the campaign')
+            setCampaign(result.data)
+        }
+    }
         
         
     
@@ -170,12 +201,12 @@ export default function CampaignCard({campaign}) {
                 {!isBrand && 
                 <>
                 <Box>
-                <Fab aria-label="like" size='small'>
+                <Fab aria-label="like" size='small' onClick={()=>likeDislikeCampaign('like', campaign._id)}>
                     <FavoriteIcon />
                  </Fab>
                 </Box> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                 <Box>
-                <Fab aria-label="dislike" size='small'>
+                <Fab aria-label="dislike" size='small' onClick={()=>likeDislikeCampaign('dislike', campaign._id)}>
                     <ThumbDownOffAltIcon />
                  </Fab>
                 </Box>
@@ -186,7 +217,10 @@ export default function CampaignCard({campaign}) {
             
             <Grid item xs={6}>
             <ViewCampaignBtn size="large" variant="outlined"><VisibilityOutlinedIcon />&nbsp;View Campaign</ViewCampaignBtn>
-            {!isBrand && <JoinCampaignBtn size="large" variant="contained"><GroupAddIcon />&nbsp;Join Campaign</JoinCampaignBtn>
+            {!isBrand && 
+            (campaign.subscribers.find(item => item.joinerId === sessionValue._id)) ?
+            <LeaveCampaignBtn size="large" variant="outlined" onClick={leaveThisCampaign}><GroupAddIcon />&nbsp;Leave Campaign</LeaveCampaignBtn> 
+            : <JoinCampaignBtn size="large" variant="contained" onClick={joinThisCampaign}><GroupAddIcon />&nbsp;Join Campaign</JoinCampaignBtn>
 }
             </Grid>
         </Grid>

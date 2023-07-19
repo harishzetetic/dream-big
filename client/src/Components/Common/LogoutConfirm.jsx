@@ -35,7 +35,7 @@ const LogoutConfirm = ({confirmLogout, setConfirmLogout})=>{
 
       </DialogContentText>
     </DialogContent>
-    <DialogActions>
+    <DialogActions style={{marginBottom:'10px'}}>
       <Button onClick={()=>{setConfirmLogout(false)}} variant='outlined'>Cancel</Button>
       <Button onClick={logoutHandler} autoFocus variant='contained'>
         Logout me

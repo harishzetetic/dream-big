@@ -23,9 +23,6 @@ import { useNavigate } from "react-router-dom";
 import Chart from '../InfluencerDashboard/Chart';
 import Deposits from '../InfluencerDashboard/Deposit';
 import Orders from '../InfluencerDashboard/Orders';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
 import DashboardIcon from '@mui/icons-material/Dashboard';
 import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
@@ -34,40 +31,47 @@ import BarChartIcon from '@mui/icons-material/BarChart';
 import LayersIcon from '@mui/icons-material/Layers';
 import LogoutConfirm from '../Common/LogoutConfirm';
 import { Button } from '@mui/material';
-import {AddIcon} from '@mui/icons-material';
+import AddIcon from '@mui/icons-material/Add';
+import logo from '../../resouces/influencer.png'
 
-import {useState, useEffect} from 'react';
+import { useState, useEffect } from 'react';
+import AllActiveCampaign from '../InfluencerDashboard/AllActiveCampaign';
+import NewBlogPost from '../Forms/NewBlogPost';
+import PageTitle from '../Common/PageTitle';
+import SideListItem from '../Common/SideListItem';
 
 const defaultTheme = createTheme();
 const drawerWidth = 240;
 
+
 const InfluencerDashboard = () => {
-    const [confirmLogout, setConfirmLogout] = useState(false);
+  const [confirmLogout, setConfirmLogout] = useState(false);
 
-    const [open, setOpen] = React.useState(true);
-    const toggleDrawer = () => {
-      setOpen(!open);
-    };
-    const navigate = useNavigate()
-    const sessionValue = JSON.parse(sessionStorage.getItem('user'))
-    useEffect(() => {
-      if(sessionValue === null){
-        navigate('/login');
-    }else if(sessionValue.role === "dreambig.influencer") {
-        navigate('/influencer-dashboard');
-    } else if(sessionValue.role === "dreambig.user"){
-        navigate('/user-dashboard');
-    }else if(sessionValue.role === "dreambig.brand"){
+  const [open, setOpen] = React.useState(true);
+  const toggleDrawer = () => {
+    setOpen(!open);
+  };
+  const navigate = useNavigate()
+  const sessionValue = JSON.parse(sessionStorage.getItem('user'))
+  useEffect(() => {
+    if (sessionValue === null) {
+      navigate('/login');
+    } else if (sessionValue.role === "dreambig.influencer") {
+      navigate('/influencer-dashboard');
+    } else if (sessionValue.role === "dreambig.user") {
+      navigate('/user-dashboard');
+    } else if (sessionValue.role === "dreambig.brand") {
       navigate('/brand-dashboard');
-  }
-    }, []);
-    
-    //***************************************************************************************************** */
-     
-        // const sessionValue = JSON.parse(sessionStorage.getItem('user'))
+    }
+  }, []);
+  const [currentTab, setCurrentTab] = useState('dashboard');
 
-        return <>
-       <ThemeProvider theme={defaultTheme}>
+  //***************************************************************************************************** */
+
+  // const sessionValue = JSON.parse(sessionStorage.getItem('user'))
+
+  return <>
+    <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
         <CssBaseline />
         <AppBar position="absolute" open={open}>
@@ -94,6 +98,7 @@ const InfluencerDashboard = () => {
               color="inherit"
               noWrap
               sx={{ flexGrow: 1 }}
+              align='center'
             >
               Influencer Dashboard
             </Typography>
@@ -115,57 +120,24 @@ const InfluencerDashboard = () => {
           >
             <Avatar sx={{ bgcolor: deepPurple[500] }}>{sessionValue.firstName[0]}{sessionValue.lastName[0]}</Avatar> &nbsp;
             <Typography>Welcome, {sessionValue.firstName}</Typography>
-            <IconButton onClick={toggleDrawer}>
+            <IconButton onClick={toggleDrawer} style={{ visibility: 'hidden' }}>
               <ChevronLeftIcon />
             </IconButton>
           </Toolbar>
           <Divider />
           <List component="nav">
-          <ListItemButton>
-            
-            <Button variant="contained" fullWidth onClick={()=>{}}><AddIcon /> &nbsp;New Post</Button>
-      </ListItemButton>
-          <ListItemButton>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Active Campaigns" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Failed Campaigns" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Followers" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Profile" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Logout" onClick={()=>setConfirmLogout(true)}/>
-    </ListItemButton>
-    <ListSubheader component="div" inset>
-      App Version: v1.0
-    </ListSubheader>
-            
+
+            <SideListItem text="New Post" onClickCallback={() => { setCurrentTab('new-post') }} IconComponent={AddIcon} isButton={true} isActive={currentTab === 'new-post'} />
+            <SideListItem text="Dashboard" onClickCallback={() => setCurrentTab('dashboard')} IconComponent={DashboardIcon} isActive={currentTab === 'dashboard'} />
+            <SideListItem text="Active Campaigns" onClickCallback={() => setCurrentTab('active-campaign')} IconComponent={ShoppingCartIcon} isActive={currentTab === 'active-campaign'} />
+            <SideListItem text="Failed Campaigns" onClickCallback={() => { }} IconComponent={PeopleIcon} />
+            <SideListItem text="Followers" onClickCallback={() => { }} IconComponent={BarChartIcon} />
+            <SideListItem text="Profile" onClickCallback={() => { }} IconComponent={LayersIcon} />
+            <SideListItem text="Logout" onClickCallback={() => setConfirmLogout(true)} IconComponent={LayersIcon} isButton={true} />
+            <ListSubheader component="div" inset>App Version: v1.0</ListSubheader>
+
           </List>
+          <img src={logo} alt="logo" style={{ height: '200px', width: '200px', marginLeft: '10px' }} />
         </Drawer>
         <Box
           component="main"
@@ -183,92 +155,104 @@ const InfluencerDashboard = () => {
           <Container maxWidth="lg" sx={{ mt: 4, mb: 4 }}>
             <Grid container spacing={3}>
               {/* Chart */}
-              <Grid item xs={12} md={8} lg={9}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  <Chart />
-                </Paper>
-              </Grid>
-              {/* Recent Deposits */}
-              <Grid item xs={12} md={4} lg={3}>
-                <Paper
-                  sx={{
-                    p: 2,
-                    display: 'flex',
-                    flexDirection: 'column',
-                    height: 240,
-                  }}
-                >
-                  <Deposits />
-                </Paper>
-              </Grid>
-              {/* Recent Orders */}
-              <Grid item xs={12}>
-                <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                  <Orders />
-                </Paper>
-              </Grid>
+              {currentTab === 'dashboard' && <>
+                <Grid item xs={12} md={8} lg={9}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: 240,
+                    }}
+                  >
+                    <Chart />
+                  </Paper>
+                </Grid>
+                {/* Recent Deposits */}
+                <Grid item xs={12} md={4} lg={3}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: 240,
+                    }}
+                  >
+                    <Deposits />
+                  </Paper>
+                </Grid>
+                {/* Recent Orders */}
+                <Grid item xs={12}>
+                  <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
+                    <Orders />
+                  </Paper>
+                </Grid>
+              </>}
+              {currentTab === "active-campaign" && <>
+                <AllActiveCampaign />
+              </>}
+              {currentTab === 'new-post' && <>
+                <NewBlogPost /></>}
+
+
+
+
+
             </Grid>
             <Copyright sx={{ pt: 4 }} />
           </Container>
         </Box>
       </Box>
-      <LogoutConfirm confirmLogout={confirmLogout} setConfirmLogout={setConfirmLogout}/>
+      <LogoutConfirm confirmLogout={confirmLogout} setConfirmLogout={setConfirmLogout} />
     </ThemeProvider>
-    </>
-    
-    
+  </>
+
+
 }
 
-  const AppBar = styled(MuiAppBar, {
-    shouldForwardProp: (prop) => prop !== 'open',
-  })(({ theme, open }) => ({
-    zIndex: theme.zIndex.drawer + 1,
+const AppBar = styled(MuiAppBar, {
+  shouldForwardProp: (prop) => prop !== 'open',
+})(({ theme, open }) => ({
+  zIndex: theme.zIndex.drawer + 1,
+  transition: theme.transitions.create(['width', 'margin'], {
+    easing: theme.transitions.easing.sharp,
+    duration: theme.transitions.duration.leavingScreen,
+  }),
+  ...(open && {
+    marginLeft: drawerWidth,
+    width: `calc(100% - ${drawerWidth}px)`,
     transition: theme.transitions.create(['width', 'margin'], {
       easing: theme.transitions.easing.sharp,
-      duration: theme.transitions.duration.leavingScreen,
+      duration: theme.transitions.duration.enteringScreen,
     }),
-    ...(open && {
-      marginLeft: drawerWidth,
-      width: `calc(100% - ${drawerWidth}px)`,
-      transition: theme.transitions.create(['width', 'margin'], {
+  }),
+}));
+
+const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
+  ({ theme, open }) => ({
+    '& .MuiDrawer-paper': {
+      position: 'relative',
+      whiteSpace: 'nowrap',
+      width: drawerWidth,
+      transition: theme.transitions.create('width', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.enteringScreen,
       }),
-    }),
-  }));
-
-  const Drawer = styled(MuiDrawer, { shouldForwardProp: (prop) => prop !== 'open' })(
-    ({ theme, open }) => ({
-      '& .MuiDrawer-paper': {
-        position: 'relative',
-        whiteSpace: 'nowrap',
-        width: drawerWidth,
+      boxSizing: 'border-box',
+      ...(!open && {
+        overflowX: 'hidden',
         transition: theme.transitions.create('width', {
           easing: theme.transitions.easing.sharp,
-          duration: theme.transitions.duration.enteringScreen,
+          duration: theme.transitions.duration.leavingScreen,
         }),
-        boxSizing: 'border-box',
-        ...(!open && {
-          overflowX: 'hidden',
-          transition: theme.transitions.create('width', {
-            easing: theme.transitions.easing.sharp,
-            duration: theme.transitions.duration.leavingScreen,
-          }),
-          width: theme.spacing(7),
-          [theme.breakpoints.up('sm')]: {
-            width: theme.spacing(9),
-          },
-        }),
-      },
-    }),
-  );
+        width: theme.spacing(7),
+        [theme.breakpoints.up('sm')]: {
+          width: theme.spacing(9),
+        },
+      }),
+    },
+  }),
+);
 
 export default InfluencerDashboard
 

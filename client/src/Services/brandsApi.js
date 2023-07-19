@@ -44,3 +44,11 @@ export const getFailedCampaign = async(brandId) => {
     }
 }
 
+export const getAllActiveCampaign = async() => {
+    try{
+        return await axios.get(`${URL}/getAllActiveCampaign`)
+    }catch(e){
+        console.log('Getting Error while getting active campaign')
+    }
+}
+

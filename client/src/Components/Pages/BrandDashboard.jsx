@@ -40,6 +40,8 @@ import NewCampaign from '../Forms/NewCampaign';
 import CampaignCard from '../Common/CampaignCard';
 import ActiveCampaign from '../BrandDashboard/ActiveCampaign';
 import FailedCampaign from '../BrandDashboard/FailedCampaign';
+import logo from '../../resouces/brand.png'
+
 
 
 const defaultTheme = createTheme();
@@ -97,6 +99,7 @@ const BrandDashboard = () => {
               color="inherit"
               noWrap
               sx={{ flexGrow: 1 }}
+              align='center'
             >
               Brand Dashboard
             </Typography>
@@ -169,6 +172,8 @@ const BrandDashboard = () => {
     </ListSubheader>
             
           </List>
+          <img src={logo} alt="logo" style={{ height: '200px', width: '200px' , marginLeft:'10px'}} />
+
         </Drawer>
 
 

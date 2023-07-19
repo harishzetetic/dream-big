@@ -1,6 +1,6 @@
 .active{
-    border-left: 6px solid #1976d2;
-    background: #9a9a9a22;
+    border-left: 6px solid #1976d2 !important;
+    background: #9a9a9a22 !important;
 }
 .db{
     font-style: italic;
