@@ -45,6 +45,7 @@ const NewCampaign = () => {
             sales: 0,
             subscribersRating:0,
             createdBy:userData._id,
+            brandName:userData.brandName,
             createdDate:dayjs().format('YYYY-MM-DD'),
             status:true
         }

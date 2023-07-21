@@ -39,6 +39,8 @@ import AllActiveCampaign from '../InfluencerDashboard/AllActiveCampaign';
 import NewBlogPost from '../Forms/NewBlogPost';
 import PageTitle from '../Common/PageTitle';
 import SideListItem from '../Common/SideListItem';
+import CampaignCard from '../Common/CampaignCard';
+import PostCollection from '../Common/PostCollection';
 
 const defaultTheme = createTheme();
 const drawerWidth = 240;
@@ -129,6 +131,8 @@ const InfluencerDashboard = () => {
 
             <SideListItem text="New Post" onClickCallback={() => { setCurrentTab('new-post') }} IconComponent={AddIcon} isButton={true} isActive={currentTab === 'new-post'} />
             <SideListItem text="Dashboard" onClickCallback={() => setCurrentTab('dashboard')} IconComponent={DashboardIcon} isActive={currentTab === 'dashboard'} />
+            <SideListItem text="My Posts" onClickCallback={() => setCurrentTab('my-posts')} IconComponent={DashboardIcon} isActive={currentTab === 'my-posts'} />
+
             <SideListItem text="Active Campaigns" onClickCallback={() => setCurrentTab('active-campaign')} IconComponent={ShoppingCartIcon} isActive={currentTab === 'active-campaign'} />
             <SideListItem text="Failed Campaigns" onClickCallback={() => { }} IconComponent={PeopleIcon} />
             <SideListItem text="Followers" onClickCallback={() => { }} IconComponent={BarChartIcon} />
@@ -193,6 +197,10 @@ const InfluencerDashboard = () => {
               </>}
               {currentTab === 'new-post' && <>
                 <NewBlogPost /></>}
+
+              {currentTab === 'my-posts' && <>
+                    <PostCollection />
+              </>}
 
 
 

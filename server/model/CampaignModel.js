@@ -59,6 +59,9 @@ const campaignSchema = mongoose.Schema({
     createdBy:{
         type: String
     },
+    brandName:{
+        type:String
+    },
     createdDate:{
         type: String
     },

@@ -50,3 +50,46 @@ export const getInfluencerAssignedCampaign = async(data) => {
         console.log('Getting error while getting getInfluencerAssignedCampaign', e)
     }
 }
+
+
+export const newBlogPost = async(data) => {
+    try{
+        return await axios.post(`${URL}/newBlogPost`, data)
+    } catch(e){
+        console.log('Getting error while getting newBlogPost', e)
+    }
+}
+
+
+export const fetchAllPostForInfluencer = async(data) => {
+    try{
+        return await axios.get(`${URL}/fetchAllPostForInfluencer`, {params: data})
+    } catch(e){
+        console.log('Getting error while getting fetchAllPostForInfluencer', e)
+    }
+}
+
+export const getSingleCampaignById = async(id) => {
+    try{
+        return await axios.get(`${URL}/getSingleCampaignById`, {params: id})
+    } catch(e){
+        console.log('Getting error while getting getSingleCampaignById', e)
+    }
+}
+
+
+export const getInfluencerById = async(id) => {
+    try{
+        return await axios.get(`${URL}/getInfluencerById`, {params: id})
+    } catch(e){
+        console.log('Getting error while getting getInfluencerById', e)
+    }
+}
+
+export const getTopInfluencers = async() => {
+    try{
+        return await axios.get(`${URL}/getTopInfluencers`)
+    } catch(e){
+        console.log('Getting error while getting getTopInfluencers', e)
+    }
+}

@@ -7,12 +7,12 @@ import { Avatar } from '@mui/material';
 import { useState } from 'react';
 import LogoutConfirm from '../Common/LogoutConfirm';
 
-function Header() {
+function Header({userLogo}) {
     const [confirmLogout, setConfirmLogout] = useState(false);
     const sessionValue = JSON.parse(sessionStorage.getItem('user'))
   return (
     <React.Fragment>
-      <Toolbar sx={{ borderBottom: 1, borderColor: 'divider' }}>
+      <Toolbar>
       <Avatar alt="Remy Sharp" src={sessionValue.picture} /> &nbsp;&nbsp;
       <Typography
           component="h2"
@@ -28,7 +28,8 @@ function Header() {
           noWrap
           sx={{ flex: 1 }}
         >
-          DREAM BIG
+                    <img src={userLogo} alt="logo" style={{ margin: '10px 0' }} />
+
         </Typography>
     
         <Button variant="contained" size="small" onClick={()=>setConfirmLogout(true)}>

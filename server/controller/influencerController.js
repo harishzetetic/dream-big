@@ -2,6 +2,7 @@
 import InfluencerModel from "../model/InfluencerModel.js"
 import CampaignModel from "../model/CampaignModel.js";
 import _ from 'lodash'
+import PostModel from "../model/PostModel.js";
 
 export const signUpInfluencer = async (request, response) => {
     try{
@@ -129,3 +130,64 @@ export const leaveCampaign = async (req, res) =>{
     }
 }
 
+export const getInfluencerAssignedCampaign = async (req, res) => {
+    try{
+        const {influencerId} = req.query;
+        const influencer = await InfluencerModel.findOne({_id:influencerId})
+        if(influencer){
+            return res.status(200).json(influencer)
+        }
+
+    } catch(e){
+        return res.status(500).json(e)
+    }
+}
+
+export const newBlogPost = async(req, res)=>{
+    try{
+        const newPost = new PostModel(req.body);
+        await newPost.save();
+        return res.status(200).json(newPost)
+
+    }catch(e){
+        return res.status(500).json(e)
+    }
+}
+
+export const fetchAllPostForInfluencer = async(req, res)=>{
+    try{
+        let allPosts = await PostModel.find({creatorID: req.query.influencerId})
+        return res.status(200).json(allPosts)
+
+    }catch(e){
+        return res.status(500).json(e)
+    }
+}
+
+export const getSingleCampaignById = async(req,res)=>{
+    try{
+        let campaign = await CampaignModel.findOne({_id: req.query.campaignId})
+        return res.status(200).json(campaign)
+
+    }catch(e){
+        return res.status(500).json(e)
+    }
+}
+
+export const getInfluencerById = async(req, res)=>{
+    try{
+        const influencer = await InfluencerModel.findOne({_id: req.query.influencerId})
+        return res.status(200).json(influencer)
+    }catch(e){
+        return res.status(500).json(e)
+    }
+}
+
+export const getTopInfluencers = async(req, res) => {
+    try{
+        const allInfluencers = await InfluencerModel.find();
+        return res.status(200).json(allInfluencers)
+    }catch(e){
+        return res.status(500).json(e)
+    }
+}

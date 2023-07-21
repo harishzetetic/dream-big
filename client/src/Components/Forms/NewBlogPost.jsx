@@ -1,9 +1,8 @@
-import BrandSignUp from "./BrandSignUp";
-import { Box, Grid, TextField, Button, MenuItem, Snackbar, Alert, Typography, styled } from "@mui/material"
+import { Box, Grid, TextField, Button, MenuItem, Typography, styled } from "@mui/material"
 import { useState, useEffect } from "react";
 import { postType } from "../../constants";
-import { signUpInfluencer, getInfluencerAssignedCampaign } from "../../Services/influencersApi";
-import { signUpBrand } from "../../Services/brandsApi";
+import { getInfluencerAssignedCampaign } from "../../Services/influencersApi";
+import { newBlogPost } from "../../Services/influencersApi";
 
 /*
 <iframe width="560" 
@@ -23,67 +22,43 @@ const NoteText = styled(Typography)`
 const NewBlogPost = () => {
     const sessionValue = JSON.parse(sessionStorage.getItem('user'));
     const [campaignPostType, setPostType]= useState('Blog')
-    const [assignCampaigns, setAssignCampaigns] = useState()
+    const [assignCampaigns, setAssignCampaigns] = useState([])
 
 
     useEffect(()=>{
         const getAssignedCampaign = async () => {
-            const result = await getInfluencerAssignedCampaign(sessionValue)
+            const result = await getInfluencerAssignedCampaign({influencerId: sessionValue._id});
+            if(result?.status === 200){
+                setAssignCampaigns(result.data.subscribedCampaigns.map(item => {
+                    return `${item.campaignId}<${item.campaignTitle}>`
+                }));
+            }
         }
+        getAssignedCampaign()
     }, [])
-    const INITIAL_RESPONSE = { show: false, message: '', type: 'success'}
-    const [apiResponse, setApiResponse] = useState(INITIAL_RESPONSE)
-    const [isFormValid, setIsFormValid] = useState(false);
     const handleSubmit = async (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const dataSetForApi = {
-            brandName: data.get('brandName'),
-            firstName : data.get('firstName'),
-            lastName: data.get('lastName'),
-            email: data.get('email'),
-            password: data.get('password'),
-            totalCampaigns:[],
-            activeCampaigns:[],
-            closedCampaigns:[],
-            role:'dreambig.brand'
+            postType: data.get('postType'),
+            assignedCampaign : data.get('assignedCampaign'),
+            postTitle: data.get('postTitle'),
+            description: data.get('description'),
+            embedId: data.get('embedId'),
+            otherURL: data.get('otherURL'),
+            likes:[],
+            comments:[],
+            creatorName:`${sessionValue.firstName} ${sessionValue.lastName}`,
+            creatorID: sessionValue._id,
+            createdDate:new Date().toDateString(),
+            assignedCampaignId:data.get('assignedCampaign').split('<')[0]
         }
-        if(dataSetForApi.brandName === 'None'){
-            setApiResponse({
-                show: true,
-                message: 'State value must be provided',
-                type: 'error'
-            })
-            return;
-        }
-        const result = await signUpBrand(dataSetForApi)
+        const result = await newBlogPost(dataSetForApi);
         if(result?.status === 200){
-            if(result.data.msg){
-                setApiResponse({
-                    show: true,
-                    message: result.data.msg,
-                    type: 'success'
-                })
-            } else if(result.data._id){
-                setApiResponse({
-                    show: true,
-                    message: 'Congratulations! Your brand account has been created. Kindly Login for proceed',
-                    type: 'success'
-                })
-            } else {
-                setApiResponse({
-                    show: true,
-                    message: 'Seems to be an error while registering your details',
-                    type: 'error'
-                })  
-            }
+            window.confirm('Congratulations! You blog post has been successfully created')
 
         } else {
-            setApiResponse({
-                show: true,
-                message: 'Oops! Error occured',
-                type: 'error'
-            })  
+            window.confirm('There is some problem with your post creation. Please try again later')
         }
     };
 
@@ -107,22 +82,21 @@ const NewBlogPost = () => {
         </Grid>
         <Grid item xs={12} sm={12}>
         <TextField
-          id="postType"
+          id="assignedCampaign"
           required
           fullWidth
           select
           label="Assign Campaign"
-          name="postType"
-          defaultValue={postType[0]}          
+          name="assignedCampaign"
         >        
-          {postType.map((item) => {
+          {assignCampaigns && assignCampaigns.map((item) => {
              return <MenuItem key={item} value={item}>{item}</MenuItem>
           })}
         </TextField>
         </Grid>
         <Grid item xs={12}>
             <TextField
-                autoComplete="given-name"
+                autoComplete="postTitle"
                 name="postTitle"
                 required
                 fullWidth
@@ -136,10 +110,10 @@ const NewBlogPost = () => {
                 <TextField
                 required
                 fullWidth
-                id="lastName"
+                id="description"
                 label="Description"
-                name="lastName"
-                autoComplete="family-name"
+                name="description"
+                autoComplete="description"
                 multiline
                 rows={8}
             />
@@ -153,10 +127,10 @@ const NewBlogPost = () => {
             <TextField
             required
             fullWidth
-            id="email"
+            id="embedId"
             label="YouTube Video Embed ID"
-            name="email"
-            autoComplete="email"
+            name="embedId"
+            autoComplete="embedId"
         />
         }
             
@@ -168,10 +142,10 @@ const NewBlogPost = () => {
         {campaignPostType === 'Blog' &&
              <TextField
              fullWidth
-             id="email"
+             id="otherURL"
              label="Other URL"
-             name="email"
-             autoComplete="email"
+             name="otherURL"
+             autoComplete="otherURL"
             
          />
         }
@@ -184,7 +158,6 @@ const NewBlogPost = () => {
         fullWidth
         variant="contained"
         sx={{ mt: 3, mb: 2 }}
-        disabled={!isFormValid}
     >
         Publish 
     </Button>

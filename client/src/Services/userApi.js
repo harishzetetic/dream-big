@@ -11,3 +11,11 @@ export const addUser = async (data) => {
         console.log('Getting error while add user', e)
     }
 }
+
+export const fetchAllPostForUser = async() => {
+    try{
+        return await axios.get(`${URL}/fetchAllPostForUser`)
+    } catch(e){
+        console.log('Getting error while getting fetchAllPostForUser', e)
+    }
+}
