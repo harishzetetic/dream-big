@@ -3,6 +3,7 @@ import InfluencerModel from "../model/InfluencerModel.js"
 import CampaignModel from "../model/CampaignModel.js";
 import _ from 'lodash'
 import PostModel from "../model/PostModel.js";
+import StaticsModel from "../model/StaticsModel.js";
 
 export const signUpInfluencer = async (request, response) => {
     try{
@@ -187,6 +188,30 @@ export const getTopInfluencers = async(req, res) => {
     try{
         const allInfluencers = await InfluencerModel.find();
         return res.status(200).json(allInfluencers)
+    }catch(e){
+        return res.status(500).json(e)
+    }
+}
+
+
+export const getStaticsByInfluencerId = async(req, res) => {
+    try{
+        const statics = await StaticsModel.find({influencerId: req.query.id});
+        return res.status(200).json(statics)
+    }catch(e){
+        return res.status(500).json(e)
+    }
+}
+
+
+export const getInfluencerStatics = async(req, res) => {
+    //querie recieved total sales   total post joined campaign
+    try{
+  
+        const interested = (await StaticsModel.find({influencerId: req.query.id, interest:true})).length;
+        const purchased = (await StaticsModel.find({influencerId: req.query.id, purchase:true})).length;
+        const posts = (await PostModel.find({creatorID: req.query.id}));
+        return res.status(200).json({interested, purchased, posts: posts.length, topPosts:posts })
     }catch(e){
         return res.status(500).json(e)
     }

@@ -1,7 +1,7 @@
 import express from 'express'
 import { addUser, getState, fetchAllPostForUser, likePost, disLikePost, postComment, followInfluencer, unfollowInfluencer, getSinglePostById, getUserBySub, pinInterest, userStatics } from '../controller/userController.js';
-import { signUpInfluencer, loginInfluencer, getAllActiveCampaign, likeDislike, joinCampaign, leaveCampaign, getInfluencerAssignedCampaign, newBlogPost, fetchAllPostForInfluencer, getSingleCampaignById, getInfluencerById, getTopInfluencers } from '../controller/influencerController.js';
-import { signUpBrand, loginBrand, createCampaign, getActiveCampaign, getFailedCampaign } from '../controller/brandController.js';
+import { signUpInfluencer, loginInfluencer, getAllActiveCampaign, likeDislike, joinCampaign, leaveCampaign, getInfluencerAssignedCampaign, newBlogPost, fetchAllPostForInfluencer, getSingleCampaignById, getInfluencerById, getTopInfluencers, getStaticsByInfluencerId, getInfluencerStatics } from '../controller/influencerController.js';
+import { signUpBrand, loginBrand, createCampaign, getActiveCampaign, getFailedCampaign, getBrandStatics } from '../controller/brandController.js';
 
 const Route = express.Router();
 
@@ -58,5 +58,11 @@ Route.get('/getUserBySub', getUserBySub)
 Route.post('/pinInterest', pinInterest)
 
 Route.get('/userStatics', userStatics)
+Route.get('/getStaticsByInfluencerId', getStaticsByInfluencerId)
+
+Route.get('/getInfluencerStatics', getInfluencerStatics)
+Route.get('/getBrandStatics', getBrandStatics)
+
+
 
 export default Route

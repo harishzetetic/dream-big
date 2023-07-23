@@ -42,6 +42,10 @@ import SideListItem from '../Common/SideListItem';
 import CampaignCard from '../Common/CampaignCard';
 import PostCollection from '../Common/PostCollection';
 import InterestedUsers from '../InfluencerDashboard/InterestedUsers';
+import Sales from '../InfluencerDashboard/Sales';
+import Followers from '../InfluencerDashboard/Followers';
+import Profile from '../InfluencerDashboard/Profile';
+import { getInfluencerStatics } from '../../Services/influencersApi';
 
 const defaultTheme = createTheme();
 const drawerWidth = 240;
@@ -56,6 +60,16 @@ const InfluencerDashboard = () => {
   };
   const navigate = useNavigate()
   const sessionValue = JSON.parse(sessionStorage.getItem('user'))
+  const [statics, setStatics] = useState();
+  useEffect(()=>{
+    const getStatics = async() => {
+      const result = await getInfluencerStatics({id: sessionValue._id})
+      if(result?.status === 200){
+        setStatics(result.data)
+      }
+    }
+    getStatics()
+  }, [])
   useEffect(() => {
     if (sessionValue === null) {
       navigate('/login');
@@ -105,11 +119,7 @@ const InfluencerDashboard = () => {
             >
               Influencer Dashboard
             </Typography>
-            <IconButton color="inherit">
-              <Badge badgeContent={4} color="secondary">
-                <NotificationsIcon />
-              </Badge>
-            </IconButton>
+         
           </Toolbar>
         </AppBar>
         <Drawer variant="permanent" open={open}>
@@ -135,9 +145,10 @@ const InfluencerDashboard = () => {
             <SideListItem text="My Posts" onClickCallback={() => setCurrentTab('my-posts')} IconComponent={DashboardIcon} isActive={currentTab === 'my-posts'} />
 
             <SideListItem text="Active Campaigns" onClickCallback={() => setCurrentTab('active-campaign')} IconComponent={ShoppingCartIcon} isActive={currentTab === 'active-campaign'} />
-            <SideListItem text="Interested Users" onClickCallback={() => setCurrentTab('interested-users')}  IconComponent={PeopleIcon} />
-            <SideListItem text="Followers" onClickCallback={() => { }} IconComponent={BarChartIcon} />
-            <SideListItem text="Profile" onClickCallback={() => { }} IconComponent={LayersIcon} />
+            <SideListItem text="Interested Users" onClickCallback={() => setCurrentTab('interested-users')}  IconComponent={PeopleIcon} isActive={currentTab === 'interested-users'}/>
+            <SideListItem text="Sales" onClickCallback={() => setCurrentTab('sales')}  IconComponent={PeopleIcon} isActive={currentTab === 'sales'}/>
+            <SideListItem text="Followers" onClickCallback={() => {setCurrentTab('followers') }} IconComponent={BarChartIcon} isActive={currentTab === 'followers'}/>
+            <SideListItem text="Profile" onClickCallback={() => { setCurrentTab('profile')}} IconComponent={LayersIcon} isActive={currentTab === 'profile'}/>
             <SideListItem text="Logout" onClickCallback={() => setConfirmLogout(true)} IconComponent={LayersIcon} isButton={true} />
             <ListSubheader component="div" inset>App Version: v1.0</ListSubheader>
 
@@ -161,7 +172,7 @@ const InfluencerDashboard = () => {
             <Grid container spacing={3}>
               {/* Chart */}
               {currentTab === 'dashboard' && <>
-                <Grid item xs={12} md={8} lg={9}>
+                <Grid item xs={12} md={4} lg={3}>
                   <Paper
                     sx={{
                       p: 2,
@@ -170,7 +181,31 @@ const InfluencerDashboard = () => {
                       height: 240,
                     }}
                   >
-                    <Chart />
+                   <Deposits title={'Queries Recieved'} value={statics?.interested || 0}/>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={4} lg={3}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: 240,
+                    }}
+                  >
+                   <Deposits title={'Total Sales'} value={statics?.purchased || 0}/>
+                  </Paper>
+                </Grid>
+                <Grid item xs={12} md={4} lg={3}>
+                  <Paper
+                    sx={{
+                      p: 2,
+                      display: 'flex',
+                      flexDirection: 'column',
+                      height: 240,
+                    }}
+                  >
+                   <Deposits title={'Total Posts'} value={statics?.posts || 0} />
                   </Paper>
                 </Grid>
                 {/* Recent Deposits */}
@@ -183,13 +218,17 @@ const InfluencerDashboard = () => {
                       height: 240,
                     }}
                   >
-                    <Deposits />
+                    <Deposits title={'Joined Campaigns'} value={sessionValue.subscribedCampaigns.length}/>
                   </Paper>
                 </Grid>
                 {/* Recent Orders */}
                 <Grid item xs={12}>
                   <Paper sx={{ p: 2, display: 'flex', flexDirection: 'column' }}>
-                    <Orders />
+                    {/* Recent Orders */}
+                    {/* Recent Orders */}
+                    {/* Recent Orders */}
+                    {/* Recent Orders */}
+                    <Orders posts={statics?.topPosts}/>
                   </Paper>
                 </Grid>
               </>}
@@ -204,6 +243,17 @@ const InfluencerDashboard = () => {
               </>}
               {currentTab === 'interested-users' && 
                 <InterestedUsers />
+              }
+               {currentTab === 'sales' && 
+                <Sales />
+              }
+
+            {currentTab === 'followers' && 
+                <Followers />
+              }
+
+              {currentTab === 'profile' && 
+                <Profile/>
               }
 
 

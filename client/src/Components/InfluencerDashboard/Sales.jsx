@@ -11,15 +11,23 @@ import { getStaticsByInfluencerId } from "../../Services/influencersApi";
 
 
 
-const InterestedUsers = () => {
+function createData(image, name, phone, email, interestedIn) {
+    return { image, name, phone, email, interestedIn };
+  }
+  
+
+
+
+
+const Sales = () => {
     const [rows, setRows] = useState([])
     const sessionValue= JSON.parse(sessionStorage.getItem('user'))
     useEffect(()=>{
         const getStatics = async()=>{
             const result = await getStaticsByInfluencerId({id: sessionValue._id});
             if(result?.status === 200){
-              const interestedData = result.data.filter(item => item.interest)
-                setRows(interestedData)
+              const purchaseData = result.data.filter(item => item.purchase)
+                setRows(purchaseData)
             }
         }
         getStatics();
@@ -59,4 +67,4 @@ const InterestedUsers = () => {
       );
 }
 
-export default InterestedUsers
+export default Sales

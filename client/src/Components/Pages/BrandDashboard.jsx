@@ -20,28 +20,25 @@ import MenuIcon from '@mui/icons-material/Menu';
 import ChevronLeftIcon from '@mui/icons-material/ChevronLeft';
 import NotificationsIcon from '@mui/icons-material/Notifications';
 import { useNavigate } from "react-router-dom";
-import Chart from '../BrandDashboard/Chart';
 import Deposits from '../BrandDashboard/Deposit';
 import Orders from '../BrandDashboard/Orders';
-import ListItemButton from '@mui/material/ListItemButton';
-import ListItemIcon from '@mui/material/ListItemIcon';
-import ListItemText from '@mui/material/ListItemText';
 import ListSubheader from '@mui/material/ListSubheader';
-import DashboardIcon from '@mui/icons-material/Dashboard';
-import ShoppingCartIcon from '@mui/icons-material/ShoppingCart';
-import PeopleIcon from '@mui/icons-material/People';
-import BarChartIcon from '@mui/icons-material/BarChart';
-import LayersIcon from '@mui/icons-material/Layers';
 import LogoutConfirm from '../Common/LogoutConfirm';
-import { Button } from '@mui/material';
 import {useState, useEffect} from 'react';
 import AddIcon from '@mui/icons-material/Add';
 import NewCampaign from '../Forms/NewCampaign';
-import CampaignCard from '../Common/CampaignCard';
 import ActiveCampaign from '../BrandDashboard/ActiveCampaign';
 import FailedCampaign from '../BrandDashboard/FailedCampaign';
 import logo from '../../resouces/brand.png'
-
+import SideListItem from '../Common/SideListItem';
+import SpaceDashboardIcon from '@mui/icons-material/SpaceDashboard';
+import CampaignIcon from '@mui/icons-material/Campaign';
+import CampaignOutlinedIcon from '@mui/icons-material/CampaignOutlined';
+import FollowTheSignsOutlinedIcon from '@mui/icons-material/FollowTheSignsOutlined';
+import AccountCircleOutlinedIcon from '@mui/icons-material/AccountCircleOutlined';
+import Followers from '../BrandDashboard/Followers';
+import Profile from '../BrandDashboard/Profile';
+import { getBrandStatics } from '../../Services/brandsApi';
 
 
 const defaultTheme = createTheme();
@@ -55,7 +52,18 @@ const BrandDashboard = () => {
       setOpen(!open);
     };
     const navigate = useNavigate()
-    const sessionValue = JSON.parse(sessionStorage.getItem('user'))
+    const sessionValue = JSON.parse(sessionStorage.getItem('user'));
+    const [statics, setStatics]=useState()
+
+    useEffect(()=>{
+        const getStatics = async()=>{
+          const result = await getBrandStatics({id: sessionValue._id, name:sessionValue.brandName})
+          if(result?.status === 200){
+            setStatics(result.data)
+          }
+        }
+        getStatics();
+    }, []);
     useEffect(() => {
       if(sessionValue === null){
         navigate('/login');
@@ -67,10 +75,7 @@ const BrandDashboard = () => {
       navigate('/brand-dashboard');
   }
     }, []);
-
-
-    
-   
+        if(statics)
         return <>
        <ThemeProvider theme={defaultTheme}>
       <Box sx={{ display: 'flex' }}>
@@ -127,46 +132,17 @@ const BrandDashboard = () => {
           </Toolbar>
           <Divider />
           <List component="nav">
-          <ListItemButton>
-            
-          <Button variant="contained" fullWidth onClick={()=>setCurrentTab('newcampaign')}><AddIcon /> &nbsp;New Campaign</Button>
-    </ListItemButton>
-          <ListItemButton>
-      <ListItemIcon>
-        <DashboardIcon />
-      </ListItemIcon>
-      <ListItemText primary="Dashboard" onClick={()=>setCurrentTab('dashboard')}/>
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <ShoppingCartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Active Campaigns" onClick={()=>setCurrentTab('active-campaign')}/>
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <PeopleIcon />
-      </ListItemIcon>
-      <ListItemText primary="Failed Campaigns" onClick={()=>setCurrentTab('failed-campaign')}/>
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <BarChartIcon />
-      </ListItemIcon>
-      <ListItemText primary="Followers" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Profile" />
-    </ListItemButton>
-    <ListItemButton>
-      <ListItemIcon>
-        <LayersIcon />
-      </ListItemIcon>
-      <ListItemText primary="Logout" onClick={()=>setConfirmLogout(true)}/>
-    </ListItemButton>
+
+            <SideListItem text="New Campaign" onClickCallback={() => { setCurrentTab('newcampaign') }} IconComponent={AddIcon} isButton={true} isActive={currentTab === 'newcampaign'}/>
+            <SideListItem text="Dashboard" onClickCallback={() => { setCurrentTab('dashboard') }} IconComponent={SpaceDashboardIcon} isActive={currentTab === 'dashboard'}/>
+            <SideListItem text="Active Campaigns" onClickCallback={() => { setCurrentTab('active-campaign') }} IconComponent={CampaignIcon} isActive={currentTab === 'active-campaign'}/>
+            <SideListItem text="Failed Campaigns" onClickCallback={() => { setCurrentTab('failed-campaign') }} IconComponent={CampaignOutlinedIcon} isActive={currentTab === 'failed-campaign'}/>
+            <SideListItem text="Influencers" onClickCallback={() => { setCurrentTab('followers') }} IconComponent={FollowTheSignsOutlinedIcon} isActive={currentTab === 'followers'}/>
+            <SideListItem text="Profile" onClickCallback={() => { setCurrentTab('profile') }} IconComponent={AccountCircleOutlinedIcon} isActive={currentTab === 'profile'}/>
+            <SideListItem text="Logout" onClickCallback={() => { setConfirmLogout(true) }} IconComponent={AddIcon} isButton={true}/>
+
+
+
     <ListSubheader component="div" inset>
       App Version: v1.0
     </ListSubheader>
@@ -217,7 +193,7 @@ const BrandDashboard = () => {
             {currentTab === 'dashboard' && 
             <>
              {/* Chart */}
-             <Grid item xs={12} md={8} lg={9}>
+             <Grid item xs={12} md={4} lg={3}>
                 <Paper
                   sx={{
                     p: 2,
@@ -226,7 +202,31 @@ const BrandDashboard = () => {
                     height: 240,
                   }}
                 >
-                  <Chart />
+                  <Deposits title={'Total Campaign'} value={statics.totalCampaign}/>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={4} lg={3}>
+                <Paper
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 240,
+                  }}
+                >
+                  <Deposits  title={'Total Posts'} value={statics.totalPosts}/>
+                </Paper>
+              </Grid>
+              <Grid item xs={12} md={4} lg={3}>
+                <Paper
+                  sx={{
+                    p: 2,
+                    display: 'flex',
+                    flexDirection: 'column',
+                    height: 240,
+                  }}
+                >
+                  <Deposits  title={'Total Sales'} value={statics.totalSales} />
                 </Paper>
               </Grid>
               {/* Recent Deposits */}
@@ -239,7 +239,7 @@ const BrandDashboard = () => {
                     height: 240,
                   }}
                 >
-                  <Deposits />
+                  <Deposits  title={'Total Query'} value={statics.totalQuery}/>
                 </Paper>
               </Grid>
               {/* Recent Orders */}
@@ -260,6 +260,13 @@ const BrandDashboard = () => {
               }
                {currentTab === 'failed-campaign' &&
                 <FailedCampaign brandId={sessionValue._id}/>
+              }
+               {currentTab === 'followers' &&
+               <Followers/>
+              }
+
+{currentTab === 'profile' &&
+            <Profile />
               }
 
 

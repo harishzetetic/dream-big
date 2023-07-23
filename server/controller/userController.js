@@ -112,10 +112,14 @@ export const  postComment= async(request, response) => {
 export const  followInfluencer= async(request, response) => {
 
     try{
+        // influencerId
         let targetUser = await UserModel.findOne({sub:request.body.sub})
-        if(targetUser){
+        let targetInfluencer = await InfluencerModel.findOne({_id: request.body.influencerId})
+        if(targetUser && targetInfluencer){
+                targetInfluencer.subscribers.push({id: request.body.sub, userName: request.body.userName})
                 targetUser.subsriptions.push(request.body.influencerId)
                 await UserModel.updateOne({ sub: request.body.sub }, { $set: targetUser })
+                await InfluencerModel.updateOne({ _id: request.body.influencerId }, { $set: targetInfluencer })
                 return response.status(200).json(targetUser)
            
         }
@@ -131,9 +135,13 @@ export const  unfollowInfluencer= async(request, response) => {
 
     try{
         let targetUser = await UserModel.findOne({sub:request.body.sub})
+        let targetInfluencer = await InfluencerModel.findOne({_id: request.body.influencerId})
+
         if(targetUser){
                 const updatedUser = targetUser.subsriptions.filter(i => i !== request.body.influencerId)
+                const updatedInfluencer = targetInfluencer.subscribers.filter(i => i.id !== request.body.sub)
                 await UserModel.updateOne({ sub: request.body.sub }, { $set: updatedUser })
+                await InfluencerModel.updateOne({ _id: request.body.influencerId }, { $set: updatedInfluencer })
                 return response.status(200).json(updatedUser)
            
         }

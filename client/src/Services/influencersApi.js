@@ -93,3 +93,19 @@ export const getTopInfluencers = async() => {
         console.log('Getting error while getting getTopInfluencers', e)
     }
 }
+
+export const getStaticsByInfluencerId = async(data)=>{
+    try{
+        return await axios.get(`${URL}/getStaticsByInfluencerId`, {params: data})
+    }catch(e){
+        console.log('Getting error while getting getStaticsByInfluencerId', e)
+    }
+}
+
+export const getInfluencerStatics = async(data)=>{
+    try{
+        return await axios.get(`${URL}/getInfluencerStatics`, {params: data})
+    }catch(e){
+        console.log('Getting error while getting getInfluencerStatics', e)
+    }
+}

@@ -28,7 +28,7 @@ function Sidebar(props) {
 
   const follow = async(influencerId, influencerName) => {
 
-    const result = await followInfluencer({sub: sessionValue.sub, influencerId })
+    const result = await followInfluencer({sub: sessionValue.sub, influencerId, userName:sessionValue.name })
     if(result?.status === 200){
       // use info is coming has subscriptions
       setCurrentSubscriptions(result.data.subsriptions)
@@ -40,7 +40,7 @@ function Sidebar(props) {
   }
   const unfollow = async(influencerId, influencerName) => {
 
-    const result = await unfollowInfluencer({sub: sessionValue.sub, influencerId })
+    const result = await unfollowInfluencer({sub: sessionValue.sub, influencerId, userName:sessionValue.name })
     if(result?.status === 200){
       setCurrentSubscriptions(result.data.subsriptions)
       NotificationManager.success('Success', `You have successfully unfollowed ${influencerName}`);

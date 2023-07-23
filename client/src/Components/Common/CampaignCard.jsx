@@ -216,15 +216,17 @@ export default function CampaignCard(props) {
                 }
             </LikeDisLikeGrid>
                 
-            
-            <Grid item xs={6}>
-            <ViewCampaignBtn size="large" variant="outlined"><VisibilityOutlinedIcon />&nbsp;View Campaign</ViewCampaignBtn>
             {!isBrand && 
-            (campaign.subscribers.find(item => item.joinerId === sessionValue._id)) ?
-            <LeaveCampaignBtn size="large" variant="outlined" onClick={leaveThisCampaign}><GroupAddIcon />&nbsp;Leave Campaign</LeaveCampaignBtn> 
-            : <JoinCampaignBtn size="large" variant="contained" onClick={joinThisCampaign}><GroupAddIcon />&nbsp;Join Campaign</JoinCampaignBtn>
-}
-            </Grid>
+                <Grid item xs={6}>
+                <ViewCampaignBtn size="large" variant="outlined"><VisibilityOutlinedIcon />&nbsp;View Campaign</ViewCampaignBtn>
+    
+                {!isBrand && (campaign.subscribers.find(item => item.joinerId === sessionValue._id)) ?
+                <LeaveCampaignBtn size="large" variant="outlined" onClick={leaveThisCampaign}><GroupAddIcon />&nbsp;Leave Campaign</LeaveCampaignBtn> 
+                : <JoinCampaignBtn size="large" variant="contained" onClick={joinThisCampaign}><GroupAddIcon />&nbsp;Join Campaign</JoinCampaignBtn>
+    }
+                </Grid>
+            }
+            
         </Grid>
             
                 

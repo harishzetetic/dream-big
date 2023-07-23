@@ -23,7 +23,6 @@ const AllActiveCampaign = ({brandId}) => {
     useEffect(()=>{
       const getActiveCampaigns = async () => {
         const result = await getAllActiveCampaign(brandId)  
-        console.log(result)
         if(result?.status === 200){
             setActiveCampaign(result.data)
           }

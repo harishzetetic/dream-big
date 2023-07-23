@@ -13,6 +13,14 @@ const staticsSchema = mongoose.Schema({
         type:String,
         required: true
     },
+    brandId:{
+        type:String,
+        required: true
+    },
+     modewName:{
+        type:String,
+        required: true
+    },
     postId:{
         type:String,
         required: true

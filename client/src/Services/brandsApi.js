@@ -52,3 +52,11 @@ export const getAllActiveCampaign = async() => {
     }
 }
 
+export const getBrandStatics = async(data) => {
+    try{
+        return await axios.get(`${URL}/getBrandStatics`, {params: data})
+    }catch(e){
+        console.log('Getting Error while getting getBrandStatics')
+    }
+}
+

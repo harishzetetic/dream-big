@@ -1,6 +1,8 @@
 
 import BrandModel from "../model/BrandModel.js";
 import CampaignModel from "../model/CampaignModel.js";
+import PostModel from "../model/PostModel.js";
+import StaticsModel from "../model/StaticsModel.js";
 
 export const signUpBrand = async (request, response) => {
     try{
@@ -52,6 +54,30 @@ export const  getFailedCampaign = async(request, response) => {
     try{
         let result = await CampaignModel.find({createdBy: request.query.brandId, status:false})
         return response.status(200).json(result)
+    }catch(e){
+        return response.status(500).json(e)
+    }
+}
+
+
+
+
+export const  getBrandStatics = async(request, response) => {
+    try{
+
+        let campaign = await CampaignModel.find({brandName: request.query.name});
+        console.log(request.query)
+        let campaignIds = campaign.map(item => item._id)
+        let posts = (await PostModel.find({})).filter(i => campaignIds.includes(i.assignedCampaignId));
+        let sales = await StaticsModel.find({brandId: request.query.id, purchase: true})
+        let query = await StaticsModel.find({brandId: request.query.id, interest: true})
+        const returnData = {
+            totalCampaign: campaign.length,
+            totalPosts: posts.length,
+            totalSales: sales.length,
+            totalQuery: query.length
+        }
+        return response.status(200).json(returnData)
     }catch(e){
         return response.status(500).json(e)
     }

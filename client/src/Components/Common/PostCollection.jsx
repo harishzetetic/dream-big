@@ -106,7 +106,6 @@ const PostCard = ({post}) => {
         const getCampaignById = async()=>{
             const result = await getSingleCampaignById({campaignId: assignedCampaignID})
             if(result?.status === 200){
-                console.log(result)
                 setAssignCampaign(result.data)
                }
         }

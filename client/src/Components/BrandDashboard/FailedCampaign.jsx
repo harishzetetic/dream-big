@@ -23,7 +23,6 @@ const FailedCampaign = ({brandId}) => {
     useEffect(()=>{
       const getFailedCampaigns = async () => {
         const result = await getFailedCampaign(brandId)  
-        console.log(result)
         if(result?.status === 200){
             setFailedCampaign(result.data)
           }
