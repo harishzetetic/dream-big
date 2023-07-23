@@ -15,7 +15,6 @@ const postSchema = mongoose.Schema({
     },
     description:{
         type: String,
-        required: true
     },
     embedId:{
         type: String,
@@ -24,6 +23,9 @@ const postSchema = mongoose.Schema({
         type: String,
     },
     likes:{
+        type: Array
+    },
+    dislikes:{
         type: Array
     },
     comments:{

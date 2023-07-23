@@ -1,4 +1,3 @@
-import * as React from 'react';
 import PropTypes from 'prop-types';
 import Grid from '@mui/material/Grid';
 import Stack from '@mui/material/Stack';
@@ -7,10 +6,16 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import {Avatar, Box, styled, Button} from'@mui/material';
 import {deepOrange} from '@mui/material/colors'
-import InfluencerInfoDrawer from '../Common/InfluencerInfoDrawer';
+import { followInfluencer, unfollowInfluencer } from '../../Services/userApi';
+import { useState } from 'react';
+import {NotificationManager} from 'react-notifications';
+
 
 function Sidebar(props) {
   const { topInfluencers, description, social, title, handleOpenInfluencerInfoDrawer } = props;
+
+  const sessionValue = JSON.parse(sessionStorage.getItem('user'))
+  const [currentSubscriptions, setCurrentSubscriptions] = useState(sessionValue.subsriptions)
   const InfluencerBox = styled(Box)`
     display:flex;
     align-items:center;
@@ -20,6 +25,30 @@ function Sidebar(props) {
   const FollowButton = styled(Button)`
   margin-left:auto
   `
+
+  const follow = async(influencerId, influencerName) => {
+
+    const result = await followInfluencer({sub: sessionValue.sub, influencerId })
+    if(result?.status === 200){
+      // use info is coming has subscriptions
+      setCurrentSubscriptions(result.data.subsriptions)
+      NotificationManager.success('Success', `You have successfully followed ${influencerName}`);
+    } else{
+      NotificationManager.error('Error', `Error while followed ${influencerName}`);
+
+    }
+  }
+  const unfollow = async(influencerId, influencerName) => {
+
+    const result = await unfollowInfluencer({sub: sessionValue.sub, influencerId })
+    if(result?.status === 200){
+      setCurrentSubscriptions(result.data.subsriptions)
+      NotificationManager.success('Success', `You have successfully unfollowed ${influencerName}`);
+    } else{
+      NotificationManager.error('Error', `Error while unfollowed ${influencerName}`);
+
+    }
+  }
   return (
     <Grid item md={12} sx={{ml: 5}}>
       <Paper elevation={0} sx={{ p: 2, bgcolor: 'grey.200' }}>
@@ -35,7 +64,11 @@ function Sidebar(props) {
         <InfluencerBox key={influencer._id}>
           <Avatar sx={{ bgcolor: deepOrange[500] }} onClick={()=>handleOpenInfluencerInfoDrawer(influencer._id)}>{influencer.firstName[0]}{influencer.lastName[0]}</Avatar>
           <Typography> &nbsp;&nbsp; {influencer.firstName}</Typography>
-          <FollowButton variant="outlined">Follow</FollowButton>
+          {currentSubscriptions && currentSubscriptions.includes(influencer._id) 
+          ? <FollowButton variant="outlined"  onClick={() => unfollow(influencer._id, `${influencer.firstName} ${influencer.lastName}`)}>UnFollow</FollowButton> : 
+          <FollowButton variant="contained" onClick={() => follow(influencer._id, `${influencer.firstName} ${influencer.lastName}`)}>Follow</FollowButton>}
+          
+          
         </InfluencerBox>
         
       ))}

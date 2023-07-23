@@ -8,6 +8,8 @@ import FavoriteIcon from '@mui/icons-material/Favorite';
 import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import {useState} from 'react'
 import { likeDislike, joinCampaign, leaveCampaign } from '../../Services/influencersApi';
+import {NotificationManager} from 'react-notifications';
+
 
 const StatusIcon = styled(CircleIcon)`
 color: #28ed6a;
@@ -106,7 +108,8 @@ export default function CampaignCard(props) {
         }
         const result = await joinCampaign(data);
         if(result?.status === 200){
-            window.confirm('You have successfully joined the campaign')
+            NotificationManager.success('Success', 'You have successfully joined the campaign');
+
             setCampaign(result.data)
         }
     }
@@ -120,13 +123,12 @@ export default function CampaignCard(props) {
         }
         const result = await leaveCampaign(data);
         if(result?.status === 200){
-            window.confirm('You have successfully leave the campaign')
+            NotificationManager.success('Success', 'You have successfully leave the campaign');
+
             setCampaign(result.data)
         }
     }
-        
-        
-    
+
     return (
         <Card sx={{ minWidth: '100%' }}>
             <CardContent>

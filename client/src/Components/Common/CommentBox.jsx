@@ -1,5 +1,5 @@
 
-import { Avatar, TextField, Fab, Grid, Rating, Link, styled, Typography, Button, CardContent, CardActions, Card, Box, Divider } from '@mui/material'
+import { Avatar, TextField, styled, Typography, Box, Divider, Button } from '@mui/material'
 
 import Accordion from '@mui/material/Accordion';
 import AccordionSummary from '@mui/material/AccordionSummary';
@@ -7,14 +7,21 @@ import AccordionDetails from '@mui/material/AccordionDetails';
 import ExpandMoreIcon from '@mui/icons-material/ExpandMore';
 
 import { deepPurple } from '@mui/material/colors';
+import {useState} from 'react';
+import { postComment } from '../../Services/userApi';
 
+import {NotificationManager} from 'react-notifications';
 
 
 const CommentSection=styled(Box)`
 display:flex;
 align-items:center;
 align-content: space-between;
-
+& button{
+    width:30px;
+    padding: 15px 0;
+    margin-left: 10px;
+}
 `
 
 
@@ -24,8 +31,9 @@ margin: 8px 0;
 
 
 
-const CommentBox = ({comments, post}) => {
-// const {name, picture, comment, }
+const CommentBox = (props) => {
+
+const [comments, setComments] = useState(props.comments)
 return <Accordion>
 <AccordionSummary
   expandIcon={<ExpandMoreIcon />}
@@ -35,13 +43,8 @@ return <Accordion>
   <Typography>Post a Comment</Typography>
 </AccordionSummary>
 <AccordionDetails>
-    <WriteComment/>
-    
-    <IndividualComment />
-    <IndividualComment />
-    <IndividualComment />
-    <IndividualComment />
-    <IndividualComment />
+    <WriteComment post={props.post} setComments={setComments} />
+    {comments && comments.map((item, index) => (<IndividualComment key={index} item={item}/>))}
 
 </AccordionDetails>
 </Accordion>
@@ -52,24 +55,36 @@ return <Accordion>
 export default CommentBox;
 
 
-const IndividualComment = () => {
+const IndividualComment = ({item}) => {
     return <><CommentSection>
-    <Avatar sx={{ bgcolor: deepPurple[500] }}>OP</Avatar>
+   <Avatar alt={item.userName} src={item.picture} />
+    &nbsp; <strong>{item.userName}</strong>
     &nbsp; &nbsp;
-    I did not like your post any more, this brand is so useless, I purchased it but feel no worthy at this cost. I am disliking it for this reason.
+    {item.comment}
     </CommentSection><CommentDivider/></>
 }
 
-const WriteComment = () => {
-    const handleSubmit = (event) => {
+ const WriteComment = ({post, setComments}) => {
+    const sessionValue = JSON.parse(sessionStorage.getItem('user'))
+    const handleSubmit = async(event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
         const dataSetForApi = {
             comment: data.get('comment'),
-            picture: '',
-            name: ''
+            picture: sessionValue.picture,
+            userName: sessionValue.name,
+            userId: sessionValue.sub,
+            postId: post._id
+            
         }
-        // need to fire the comment api here
+        const result = await postComment(dataSetForApi);
+        if(result?.status === 200){
+            setComments(result.data.comments)
+            NotificationManager.success('Success', 'Your comment has been added');
+        } else {
+            NotificationManager.error('Error', 'Error while commenting this post');
+
+        }
     }
     return <><CommentSection component="form" noValidate={false} onSubmit={handleSubmit} sx={{ mt: 3 }}>
     <Avatar sx={{ bgcolor: deepPurple[500] }}>OP</Avatar>
@@ -81,5 +96,14 @@ const WriteComment = () => {
         label="Please write your comment..."
         name="comment"          
 /> 
+<Button
+        type="submit"
+        fullWidth
+        variant="contained"
+        size='large'
+       
+    >
+        Post
+    </Button>
     </CommentSection><CommentDivider/></>
 }

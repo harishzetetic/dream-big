@@ -1,5 +1,5 @@
 import express from 'express'
-import { addUser, getState, fetchAllPostForUser } from '../controller/userController.js';
+import { addUser, getState, fetchAllPostForUser, likePost, disLikePost, postComment, followInfluencer, unfollowInfluencer, getSinglePostById, getUserBySub, pinInterest, userStatics } from '../controller/userController.js';
 import { signUpInfluencer, loginInfluencer, getAllActiveCampaign, likeDislike, joinCampaign, leaveCampaign, getInfluencerAssignedCampaign, newBlogPost, fetchAllPostForInfluencer, getSingleCampaignById, getInfluencerById, getTopInfluencers } from '../controller/influencerController.js';
 import { signUpBrand, loginBrand, createCampaign, getActiveCampaign, getFailedCampaign } from '../controller/brandController.js';
 
@@ -44,5 +44,19 @@ Route.get('/fetchAllPostForUser', fetchAllPostForUser)
 Route.get('/getInfluencerById', getInfluencerById)
 
 Route.get('/getTopInfluencers', getTopInfluencers)
+
+Route.put('/likePost', likePost)
+Route.put('/disLikePost', disLikePost)
+Route.put('/postComment', postComment)
+Route.put('/followInfluencer', followInfluencer)
+Route.put('/unfollowInfluencer', unfollowInfluencer)
+
+
+Route.get('/getSinglePostById', getSinglePostById)
+Route.get('/getUserBySub', getUserBySub)
+
+Route.post('/pinInterest', pinInterest)
+
+Route.get('/userStatics', userStatics)
 
 export default Route

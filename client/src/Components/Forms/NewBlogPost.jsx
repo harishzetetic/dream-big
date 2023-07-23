@@ -3,16 +3,8 @@ import { useState, useEffect } from "react";
 import { postType } from "../../constants";
 import { getInfluencerAssignedCampaign } from "../../Services/influencersApi";
 import { newBlogPost } from "../../Services/influencersApi";
+import {NotificationManager} from 'react-notifications';
 
-/*
-<iframe width="560" 
-    height="315" 
-    src="https://www.youtube.com/embed/NBBDSosV3UY" 
-    title="YouTube video player"
-    frameborder="0" allow="accelerometer; autoplay; 
-    clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" 
-    allowfullscreen></iframe>
-*/
 
 const NoteText = styled(Typography)`
     font-size: 12px
@@ -47,6 +39,7 @@ const NewBlogPost = () => {
             embedId: data.get('embedId'),
             otherURL: data.get('otherURL'),
             likes:[],
+            dislikes:[],
             comments:[],
             creatorName:`${sessionValue.firstName} ${sessionValue.lastName}`,
             creatorID: sessionValue._id,
@@ -55,10 +48,12 @@ const NewBlogPost = () => {
         }
         const result = await newBlogPost(dataSetForApi);
         if(result?.status === 200){
-            window.confirm('Congratulations! You blog post has been successfully created')
+            NotificationManager.success('Success', 'Congratulations! You blog post has been successfully created');
+
 
         } else {
-            window.confirm('There is some problem with your post creation. Please try again later')
+            NotificationManager.error('Error', 'There is some problem with your post creation. Please try again later');
+
         }
     };
 

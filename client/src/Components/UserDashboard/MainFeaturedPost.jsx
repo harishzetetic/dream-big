@@ -8,12 +8,14 @@ import Paper from '@mui/material/Paper';
 import Typography from '@mui/material/Typography';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
-import Box from '@mui/material/Box';
+import {Box, Button} from '@mui/material';
+
 
 function MainFeaturedPost(props) {
   const { post } = props;
-
+  const sessionValue = JSON.parse(sessionStorage.getItem('user'))
   return (
+    
     <Paper
       sx={{
         position: 'relative',
@@ -23,11 +25,9 @@ function MainFeaturedPost(props) {
         backgroundSize: 'cover',
         backgroundRepeat: 'no-repeat',
         backgroundPosition: 'center',
-        backgroundImage: `url(${post.image})`,
       }}
     >
-      {/* Increase the priority of the hero background image */}
-      {<img style={{ display: 'none' }} src={post.image} alt={post.imageText} />}
+
       <Box
         sx={{
           position: 'absolute',
@@ -38,8 +38,9 @@ function MainFeaturedPost(props) {
           backgroundColor: 'rgba(0,0,0,.3)',
         }}
       />
+      
       <Grid container>
-        <Grid item md={6}>
+        <Grid item md={12}>
           <Box
             sx={{
               position: 'relative',
@@ -47,15 +48,20 @@ function MainFeaturedPost(props) {
               pr: { md: 0 },
             }}
           >
+            <Typography>&#x2022;  Sponsord</Typography>
             <Typography component="h1" variant="h3" color="inherit" gutterBottom>
-              {post.title}
+             {post.postTitle}
             </Typography>
             <Typography variant="h5" color="inherit" paragraph>
-              {post.description}
+            {post?.description && post.description.slice(0, 250)}...
             </Typography>
-            <Link variant="subtitle1" href="#">
-              {post.linkText}
+           
+            <Link href={`/user-dashboard/${post._id}/${post.assignedCampaignId}/${sessionValue.sub}`} target='_blank'>
+            <Button size="large" variant="contained">View Post</Button>
+
             </Link>
+            <br/><br/>
+            {'By '}{post.creatorName} 
           </Box>
         </Grid>
       </Grid>

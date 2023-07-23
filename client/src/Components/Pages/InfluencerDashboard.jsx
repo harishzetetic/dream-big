@@ -41,6 +41,7 @@ import PageTitle from '../Common/PageTitle';
 import SideListItem from '../Common/SideListItem';
 import CampaignCard from '../Common/CampaignCard';
 import PostCollection from '../Common/PostCollection';
+import InterestedUsers from '../InfluencerDashboard/InterestedUsers';
 
 const defaultTheme = createTheme();
 const drawerWidth = 240;
@@ -134,7 +135,7 @@ const InfluencerDashboard = () => {
             <SideListItem text="My Posts" onClickCallback={() => setCurrentTab('my-posts')} IconComponent={DashboardIcon} isActive={currentTab === 'my-posts'} />
 
             <SideListItem text="Active Campaigns" onClickCallback={() => setCurrentTab('active-campaign')} IconComponent={ShoppingCartIcon} isActive={currentTab === 'active-campaign'} />
-            <SideListItem text="Failed Campaigns" onClickCallback={() => { }} IconComponent={PeopleIcon} />
+            <SideListItem text="Interested Users" onClickCallback={() => setCurrentTab('interested-users')}  IconComponent={PeopleIcon} />
             <SideListItem text="Followers" onClickCallback={() => { }} IconComponent={BarChartIcon} />
             <SideListItem text="Profile" onClickCallback={() => { }} IconComponent={LayersIcon} />
             <SideListItem text="Logout" onClickCallback={() => setConfirmLogout(true)} IconComponent={LayersIcon} isButton={true} />
@@ -201,6 +202,9 @@ const InfluencerDashboard = () => {
               {currentTab === 'my-posts' && <>
                     <PostCollection />
               </>}
+              {currentTab === 'interested-users' && 
+                <InterestedUsers />
+              }
 
 
 

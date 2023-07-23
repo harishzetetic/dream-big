@@ -2,13 +2,19 @@ import { Avatar, Fab, Grid, Rating, Link, styled, Typography, Button, CardConten
 import CircleIcon from '@mui/icons-material/Circle';
 import VisibilityOutlinedIcon from '@mui/icons-material/VisibilityOutlined';
 import VerifiedIcon from '@mui/icons-material/Verified';
-import FavoriteIcon from '@mui/icons-material/Favorite';
-import ThumbDownOffAltIcon from '@mui/icons-material/ThumbDownOffAlt';
 import { useState, useEffect } from 'react'
 import { deepPurple } from '@mui/material/colors';
-import { fetchAllPostForInfluencer, getSingleCampaignById } from '../../Services/influencersApi';
+import { getSingleCampaignById } from '../../Services/influencersApi';
 import CommentBox from '../Common/CommentBox';
-import { fetchAllPostForUser } from '../../Services/userApi';
+import { fetchAllPostForUser, likePost, disLikePost } from '../../Services/userApi';
+import Checkbox from '@mui/material/Checkbox';
+import FavoriteBorder from '@mui/icons-material/FavoriteBorder';
+import Favorite from '@mui/icons-material/Favorite';
+import ThumbDownIcon from '@mui/icons-material/ThumbDown';
+import ThumbDownOutlinedIcon from '@mui/icons-material/ThumbDownOutlined';
+import {NotificationManager} from 'react-notifications';
+
+
 
 const StatusIcon = styled(CircleIcon)`
 color: #28ed6a;
@@ -65,9 +71,6 @@ const BrandInfoBox = styled(Box)`
     display:flex;
     align-items:center;
 `
-const BrandInfo = styled(Typography)`
-    color:#638aff;
-`
 const StyledVerifiedIcon = styled(VerifiedIcon)`
 color:#638aff;
 `
@@ -77,46 +80,76 @@ const LikeDisLikeGrid = styled(Grid)`
     align-items:center;
 `
 
+const PostContainer = styled(Box)`
+    max-height: 70vh;
+    overflow:auto;
+`
 
-const PostsForUser = () => {
+const PostsForUser = ({handleOpenInfluencerInfoDrawer}) => {
     const [allPosts, setAllPosts] = useState([])
-    const sessionValue = JSON.parse(sessionStorage.getItem('user'));
     useEffect(()=>{
         const fetchAllPost = async() => {
             const result =  await fetchAllPostForUser()
            if(result?.status === 200){
-            console.log(result)
-            setAllPosts(result.data)
+            setAllPosts(result.data.reverse())
            }
         }
         fetchAllPost()
     }, [])
-    return <>
+    return <PostContainer>
     {allPosts.map(item => (
-        <PostCard key={item._id} post={item}/>
+        <PostCard key={item._id} post={item} handleOpenInfluencerInfoDrawer={handleOpenInfluencerInfoDrawer}/>
         
     ))}
-    </>
+    </PostContainer>
 }
 
-const PostCard = ({post}) => {
+
+const PostCard = (props) => {
+    
     const sessionValue = JSON.parse(sessionStorage.getItem('user'));
     const [assignedCampaign, setAssignCampaign] = useState({})
+    const [post, setPost] = useState(props.post)
+    const [likeStatus, setLikeStatus] = useState(!!post.likes.find(i => i.id === sessionValue.sub))
+    const [disLikeStatus, setDisLikeStatus] = useState(!!post.dislikes.find(i => i.id === sessionValue.sub))
+
     useEffect(()=>{
         const assignedCampaignID=post.assignedCampaignId;
         const getCampaignById = async()=>{
             const result = await getSingleCampaignById({campaignId: assignedCampaignID})
             if(result?.status === 200){
-                console.log(result)
                 setAssignCampaign(result.data)
                }
         }
         getCampaignById();
     },[])
+
+    const postLikeHandler = async() => {
+        const result = await likePost({likeStatus, postId:post._id, userID:sessionValue.sub, userName:sessionValue.name})
+        if(result?.status === 200){
+            setLikeStatus(!!result.data.likes.find(i => i.id === sessionValue.sub))
+            setPost(result.data)
+            NotificationManager.success('Success', 'Wonderful! Your feedback has been recorded');
+        } else {
+            NotificationManager.error('Error', 'Error while recorded your feedback');
+
+        }
+    }
+    const postDisLikeHandler = async() => {
+        const result = await disLikePost({disLikeStatus, postId:post._id, userID:sessionValue.sub, userName:sessionValue.name})
+        if(result?.status === 200){
+            setDisLikeStatus(!!result.data.likes.find(i => i.id === sessionValue.sub))
+            setPost(result.data)
+            NotificationManager.success('Success', 'Wonderful! Your feedback has been recorded');
+        } else {
+            NotificationManager.error('Error', 'Error while recorded your feedback');
+
+        }
+    }
     return (
         <>
         <InfluencerInfo>
-        <Avatar sx={{ bgcolor: deepPurple[500] }}>{`${post.creatorName.split(' ')[0][0]}${post.creatorName.split(' ')[1][0]}`}</Avatar> &nbsp; &nbsp;
+        <Avatar sx={{ bgcolor: deepPurple[500] }} onClick={props.handleOpenInfluencerInfoDrawer}>{`${post.creatorName.split(' ')[0][0]}${post.creatorName.split(' ')[1][0]}`}</Avatar> &nbsp; &nbsp;
             <Typography>
                 {post.creatorName} <em>posted a {post.postType} Post on</em> {post.createdDate}
 
@@ -126,13 +159,13 @@ const PostCard = ({post}) => {
             <Card sx={{ minWidth: '100%' }}>
                 <CardContent>
                     <Typography variant="h5" component="div">
-                        {post.postTitle}
+                        {post.postTitle.slice(0, 80)}...
                     </Typography>
                     <Typography sx={{ mb: 1.5 }} color="text.secondary">
                         Published on {post.createdDate}
                     </Typography>
                     <Typography variant="body2">
-                        {post.description}
+                        {post?.description && post.description.slice(0, 150).concat('....') || ''}
 
                     </Typography>
                     {post.embedId &&
@@ -198,14 +231,21 @@ const PostCard = ({post}) => {
                         <LikeDisLikeGrid item xs={6}>
                         <>
                             <Box>
-                                <Fab aria-label="like" size='small' onClick={() => { }}>
-                                    <FavoriteIcon />
-                                </Fab>
+                            <Checkbox 
+                                icon={!likeStatus ? <FavoriteBorder />: <Favorite />} 
+                                checkedIcon={likeStatus ? <Favorite />:<FavoriteBorder />} 
+                                value={likeStatus} 
+                                onClick={postLikeHandler}
+                            />
                             </Box> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                             <Box>
-                                <Fab aria-label="dislike" size='small' onClick={() => { }}>
-                                    <ThumbDownOffAltIcon />
-                                </Fab>
+                            <Checkbox 
+                                icon={!disLikeStatus ? <ThumbDownOutlinedIcon />: <ThumbDownIcon />} 
+                                checkedIcon={disLikeStatus ? <ThumbDownIcon />:<ThumbDownOutlinedIcon />} 
+                                value={disLikeStatus} 
+                                onClick={postDisLikeHandler}
+                            />
+
                             </Box>
                         </>
 
@@ -213,13 +253,17 @@ const PostCard = ({post}) => {
                         }
                         
                         <Grid item xs={6}>
+                            <Link href={`/user-dashboard/${post._id}/${post.assignedCampaignId}/${sessionValue.sub}`} target='_blank'>
                             <ViewCampaignBtn size="large" variant="outlined"><VisibilityOutlinedIcon />&nbsp;View Post</ViewCampaignBtn>
+                            </Link>
+                            
                         </Grid>
                     </Grid>
 
                 </CardActions>
-                {sessionValue.role === "dreambig.user" && <CommentBox comments={post.comments} post={post}/>}
-                
+                {sessionValue.role === "dreambig.user" && 
+                <CommentBox comments={post.comments} post={post}/>
+                }
             </Card>
         </>
     );

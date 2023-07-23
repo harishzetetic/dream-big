@@ -43,6 +43,7 @@ const InfluencerInfoDrawer = ({openDrawer, setOpenDrawer, influencerId}) => {
 const anchor = 'right';
 const [influencer, setInfuencer] = useState();
 useEffect(()=>{
+    if(influencerId){
         const getInfluencer = async () => {
             const result = await getInfluencerById({influencerId})
             if(result?.status === 200){
@@ -50,16 +51,17 @@ useEffect(()=>{
             }
         }
         getInfluencer()
+    }
+       
     
 }, [openDrawer, influencerId])
 
-const social = [
+const social = influencer ? [
     { name: 'Facebook', icon: FacebookIcon , url: influencer.facebookURL},
     { name: 'Instagram', icon: InstagramIcon , url: influencer.instagramURL},
     { name: 'YouTube', icon: YouTubeIcon , url: influencer.youtubeURL},
-  ]
+  ] : []
 return  <React.Fragment key={anchor}>
-    {console.log(influencer)}
     {influencer && 
         <Drawer
         anchor={anchor}
@@ -70,6 +72,8 @@ return  <React.Fragment key={anchor}>
             <Name>
             {influencer.firstName} {influencer.lastName}
             <Typography>{influencer.city}</Typography>
+            {console.log(influencer)}
+            <Typography>{influencer.subscribers.length} Followers</Typography>
             </Name> 
             
             <SocialMedia>
